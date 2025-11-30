@@ -1,1 +1,2 @@
+pnpm check-updates
 pnpm ci:format
