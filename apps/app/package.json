@@ -8,10 +8,12 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint --max-warnings 0",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "db:typegen": "supabase gen types typescript --local > src/kernel/db/database.types.ts"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.4",
+    "@supabase/supabase-js": "^2.91.0",
     "@tanstack/react-router": "^1.153.1",
     "@tanstack/react-router-devtools": "^1.153.1",
     "class-variance-authority": "^0.7.1",
