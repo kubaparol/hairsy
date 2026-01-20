@@ -1,4 +1,12 @@
-import { viteConfig } from "@repo/eslint-config/vite";
+import { viteConfig } from '@repo/eslint-config/vite';
 
 /** @type {import("eslint").Linter.Config} */
-export default viteConfig;
+export default [
+  ...viteConfig,
+  {
+    files: ['**/lib/ui/components/**/*.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+];

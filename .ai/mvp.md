@@ -10,7 +10,7 @@ We focus on the "Happy Path" - from salon creation to successful booking.
 
 ### 1. Authentication and Users
 
-- Login/Registration exclusively through **Google OAuth** (shared for Business and Client).
+- Login/Registration exclusively through **email and password** (shared for Business and Client).
 - Simple role division in the database: `USER` (Client) and `OWNER` (Business).
 
 ### 2. Business Path (Salon)

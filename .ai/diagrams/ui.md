@@ -31,7 +31,7 @@ flowchart TD
   %% ========= AUTH & CONSENTS =========
   subgraph "Moduł Autentykacji i Zgód"
     P0
-    Login0["Przycisk: Google OAuth"]:::updated
+    Login0["Formularz: e-mail + hasło (logowanie/rejestracja)"]:::updated
     ConsentP["Ekran Zgód RODO"]:::updated
     ConsentForm["Formularz Zgód"]:::updated
   end

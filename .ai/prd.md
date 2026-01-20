@@ -14,10 +14,10 @@ Hairsy is an appointment booking application for small hair salons that:
 
 MVP focuses on the flow:
 
-1. owner logs in via Google OAuth and completes salon data,
+1. owner registers/logs in using email and password and completes salon data,
 2. owner adds at least one service,
 3. salon becomes visible in public listing,
-4. client logs in via Google OAuth, finds salon, selects service and books an available slot,
+4. client registers/logs in using email and password, finds salon, selects service and books an available slot,
 5. booking appears in owner's calendar and client's panel.
 
 ### 1.3 Personas and Roles
@@ -27,7 +27,7 @@ MVP focuses on the flow:
 
 ### 1.4 Product and Technical Assumptions
 
-- Authentication and registration exclusively through Google OAuth.
+- Authentication and registration exclusively through email and password.
 - Organizational model: 1 owner = 1 employee = 1 calendar.
 - Time grid: fixed 15-minute interval for the entire system.
 - Booking window: earliest 1 hour from now, latest 1 month from now.
@@ -61,7 +61,8 @@ MVP focuses on the flow:
 
 #### 3.1.1 Login and Registration
 
-- System must enable registration/login exclusively through Google OAuth.
+- System must enable registration/login exclusively through email and password.
+- System must store passwords securely (hashed; no plaintext storage).
 - System must create user profile on first login.
 - System must enforce consent acceptance (GDPR) on first login/registration.
 
@@ -213,11 +214,12 @@ MVP focuses on the flow:
 
 #### ID: US-001
 
-**Title:** Login and Registration via Google OAuth
-**Description:** As a user I want to log in or register via Google OAuth to securely use the application.
+**Title:** Login and Registration via Email and Password
+**Description:** As a user I want to log in or register using email and password to securely use the application.
 **Acceptance Criteria:**
 
-- User can initiate login via Google.
+- User can register with email and password.
+- User can log in with email and password.
 - After successful login, session is created and user enters the application.
 - On first login, user profile is created.
 - No alternative login mechanism exists in MVP.
