@@ -1,48 +1,10 @@
-import { publicLayoutRoute } from '@/cross-shell/routing/roots';
-import { AppRoutes } from '@/ipc/routes';
-import {
-  useNavigate,
-  createRoute,
-  useRouter,
-  redirect,
-} from '@tanstack/react-router';
+import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useMutation } from '@tanstack/react-query';
-import { signIn } from '@/features/auth/auth.api';
-import { supabase } from '@/kernel/db/supabase-client';
+import { signIn } from '../auth.api';
+import { loginRoute } from '../route';
 
-const loginRoute = createRoute({
-  getParentRoute: () => publicLayoutRoute,
-  path: AppRoutes.LOGIN,
-  validateSearch: (search: Record<string, unknown>) => {
-    return {
-      redirect: (search.redirect as string) || undefined,
-    };
-  },
-  beforeLoad: async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    // Jeśli użytkownik jest już zalogowany, przekieruj do dashboardu
-    if (session) {
-      throw redirect({
-        to: AppRoutes.DASHBOARD,
-      });
-    }
-  },
-  component: () => <LoginComponent />,
-});
-
-const publicRoutes = [loginRoute];
-
-export { loginRoute, publicRoutes };
-
-/// TEMP HERE
-
-// eslint-disable-next-line react-refresh/only-export-components
-function LoginComponent() {
+export function LoginForm() {
   const navigate = useNavigate();
-  // Dostęp do routera, aby odświeżyć kontekst po logowaniu
   const router = useRouter();
   const { redirect: redirectPath } = loginRoute.useSearch();
 
@@ -55,7 +17,7 @@ function LoginComponent() {
 
       // 2. Przekierowanie do dashboardu lub do strony, z której użytkownik został przekierowany
       await navigate({
-        to: redirectPath || AppRoutes.DASHBOARD,
+        to: redirectPath || '/dashboard',
       });
     },
     onError: (error) => {

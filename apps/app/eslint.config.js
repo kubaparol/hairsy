@@ -4,7 +4,7 @@ import { viteConfig } from '@repo/eslint-config/vite';
 export default [
   ...viteConfig,
   {
-    files: ['**/lib/ui/components/**/*.tsx'],
+    files: ['**/shared/ui/components/**/*.tsx'],
     rules: {
       'react-refresh/only-export-components': 'off',
     },

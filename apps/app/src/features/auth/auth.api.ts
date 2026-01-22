@@ -1,4 +1,4 @@
-import { supabase } from '@/kernel/db/supabase-client';
+import { supabase } from '@/core/supabase';
 
 export const signIn = async ({
   email,

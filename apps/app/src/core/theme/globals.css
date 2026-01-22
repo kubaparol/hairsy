@@ -1,3 +1,4 @@
+@import '@repo/tailwind-config';
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
