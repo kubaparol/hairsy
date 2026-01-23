@@ -1,6 +1,5 @@
 import { useNavigate, useRouter } from '@tanstack/react-router';
-import { useMutation } from '@tanstack/react-query';
-import { signIn } from '../auth.api';
+import { useSignIn, SupabaseError, SupabaseErrorCode } from '@/entities';
 import { loginRoute } from '../route';
 
 export function LoginForm() {
@@ -8,8 +7,7 @@ export function LoginForm() {
   const router = useRouter();
   const { redirect: redirectPath } = loginRoute.useSearch();
 
-  const mutation = useMutation({
-    mutationFn: signIn,
+  const mutation = useSignIn({
     onSuccess: async () => {
       // 1. Ważne: Mówimy routerowi, że stan autoryzacji się zmienił.
       // Router ponownie wywoła 'beforeLoad' w trasach i odświeży kontekst.
@@ -21,7 +19,11 @@ export function LoginForm() {
       });
     },
     onError: (error) => {
-      alert(`Błąd logowania: ${error.message}`);
+      // Loguj pełny błąd w development dla debugowania
+      // eslint-disable-next-line turbo/no-undeclared-env-vars
+      if (import.meta.env.DEV) {
+        console.error('Sign in error:', error);
+      }
     },
   });
 
@@ -32,6 +34,18 @@ export function LoginForm() {
     const password = formData.get('password') as string;
 
     mutation.mutate({ email, password });
+  };
+
+  // Helper do wyświetlania przyjaznych komunikatów błędów
+  const getErrorMessage = (error: SupabaseError | null): string | null => {
+    if (!error) return null;
+
+    // Możemy dostosować komunikaty dla konkretnych typów błędów
+    if (error.is(SupabaseErrorCode.RATE_LIMITED)) {
+      return 'Zbyt wiele prób logowania. Poczekaj chwilę i spróbuj ponownie.';
+    }
+
+    return error.message;
   };
 
   return (
@@ -64,7 +78,11 @@ export function LoginForm() {
         {mutation.isPending ? 'Logowanie...' : 'Zaloguj'}
       </button>
 
-      {mutation.isError && <p className="text-red-500">Coś poszło nie tak!</p>}
+      {mutation.error && (
+        <p className="text-red-500 text-sm">
+          {getErrorMessage(mutation.error)}
+        </p>
+      )}
     </form>
   );
 }
