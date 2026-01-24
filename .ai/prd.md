@@ -64,7 +64,7 @@ MVP focuses on the flow:
 - System must enable registration/login exclusively through email and password.
 - System must store passwords securely (hashed; no plaintext storage).
 - System must create user profile on first login.
-- System must enforce consent acceptance (GDPR) on first login/registration.
+- System must enforce consent acceptance (GDPR) during registration.
 
 #### 3.1.2 Roles and Authorization
 
@@ -165,8 +165,9 @@ MVP focuses on the flow:
 
 #### 3.8.1 Consents
 
-- System must present and record consents required to use the application on first login.
+- System must present and record consents required to use the application during registration.
 - System must store timestamp and version of consent text (or policy version identifier).
+- Required consents must be accepted before registration can be completed.
 
 #### 3.8.2 Account Deletion
 
@@ -226,13 +227,13 @@ MVP focuses on the flow:
 
 #### ID: US-002
 
-**Title:** Enforce GDPR Consents on First Login
-**Description:** As a user I want to accept required consents to use the product in compliance with GDPR.
+**Title:** Enforce GDPR Consents During Registration
+**Description:** As a user I want to accept required consents during registration to use the product in compliance with GDPR.
 **Acceptance Criteria:**
 
-- On first login user sees consent screen.
-- Without accepting required consents user cannot proceed.
-- System saves information about acceptance (time, text version).
+- During registration user sees required consent checkboxes in the registration form.
+- Without accepting required consents user cannot complete registration.
+- System saves information about acceptance (time, text version) upon successful registration.
 
 #### ID: US-003
 

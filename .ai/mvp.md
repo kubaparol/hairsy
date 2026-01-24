@@ -15,7 +15,7 @@ We focus on the "Happy Path" - from salon creation to successful booking.
 
 ### 2. Business Path (Salon)
 
-- **Onboarding (Creator):** Form after first login (Name, Address, Phone).
+- **Onboarding (Creator):** Form after registration (Name, Address, Phone).
 - **Working hours definition:** Simple scheme (e.g., Mon-Fri 9:00-17:00, Sat 10:00-14:00, Sun Closed).
 - **Service management:** CRUD services (Name, Duration, Price).
 - **Employee management:** MVP assumes **only one employee** (Owner) assigned to services.

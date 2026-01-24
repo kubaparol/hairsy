@@ -17,7 +17,6 @@ flowchart TD
     L0
     Nav0["Nawigacja i Shell"]:::shared
     Guard0{"Guard: sesja?"}:::shared
-    Guard1{"Guard: zgody?"}:::shared
     Guard2{"Guard: rola i kompletność?"}:::shared
     Err0["Obsługa błędów i komunikaty"]:::shared
     TZ0["Strefa czasowa salonu"]:::shared
@@ -26,29 +25,25 @@ flowchart TD
   L0 --> Nav0
   L0 --> Guard0
   Guard0 --"brak sesji"--> P0["Strona Wejścia"]:::updated
-  Guard0 --"jest sesja"--> Guard1
+  Guard0 --"jest sesja"--> Guard2
 
   %% ========= AUTH & CONSENTS =========
   subgraph "Moduł Autentykacji i Zgód"
     P0
-    Login0["Formularz: e-mail + hasło (logowanie/rejestracja)"]:::updated
-    ConsentP["Ekran Zgód RODO"]:::updated
-    ConsentForm["Formularz Zgód"]:::updated
+    Login0["Formularz: e-mail + hasło (logowanie)"]:::updated
+    Register0["Formularz: rejestracja + zgody RODO"]:::updated
   end
 
   P0 --> Login0
+  P0 --> Register0
   Login0 --> S0[[Moduł Sesji]]:::state
-  S0 --> B0[[Backend: Uwierzytelnianie]]:::backend
-  B0 --> S0
-  S0 --> Guard1
-
-  Guard1 --"zgody brak"--> ConsentP
-  ConsentP --> ConsentForm
-  ConsentForm --> C0[[Moduł Zgód]]:::state
+  Register0 --> C0[[Moduł Zgód]]:::state
+  Register0 --> S0
   C0 --> B1[[Backend: Zgody]]:::backend
   B1 --> C0
-  C0 --> Guard2
-  Guard1 --"zgody są"--> Guard2
+  S0 --> B0[[Backend: Uwierzytelnianie]]:::backend
+  B0 --> S0
+  S0 --> Guard2
 
   %% ========= ROUTING BY ROLE / COMPLETENESS =========
   subgraph "Routing i Autoryzacja"
@@ -220,7 +215,7 @@ flowchart TD
   B9 --> S0
 
   %% ========= CLASS ASSIGNMENTS (for clarity) =========
-  class Nav0,Guard0,Guard1,Guard2,Err0,TZ0 shared;
+  class Nav0,Guard0,Guard2,Err0,TZ0 shared;
   class P0,Pub0,SalonP,SlotsP,DashO,DashU,Onb0,ServP,CalP,VisitsP,AccP page;
   class S0,C0,A0,Sln0,Usvc0,Av0,Res0,Cal0,Hist0,Rodo0 state;
   class B0,B1,B2,B3,B4,B5,B6,B7,B8,B9 backend;

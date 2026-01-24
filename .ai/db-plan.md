@@ -198,7 +198,7 @@ CREATE TABLE bookings (
 
 ### 1.6 consents
 
-Zgody GDPR użytkowników.
+Zgody GDPR użytkowników. Zgody są akceptowane podczas rejestracji w formularzu rejestracji i zapisywane w tej tabeli.
 
 | Kolumna        | Typ         | Ograniczenia                                        | Opis                                    |
 | -------------- | ----------- | --------------------------------------------------- | --------------------------------------- |
