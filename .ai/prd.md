@@ -63,7 +63,7 @@ MVP focuses on the flow:
 
 - System must enable registration/login exclusively through email and password.
 - System must store passwords securely (hashed; no plaintext storage).
-- System must create user profile on first login.
+- System must create user profile on registration.
 - System must enforce consent acceptance (GDPR) during registration.
 
 #### 3.1.2 Roles and Authorization
@@ -222,7 +222,7 @@ MVP focuses on the flow:
 - User can register with email and password.
 - User can log in with email and password.
 - After successful login, session is created and user enters the application.
-- On first login, user profile is created.
+- On registration, user profile is created.
 - No alternative login mechanism exists in MVP.
 
 #### ID: US-002

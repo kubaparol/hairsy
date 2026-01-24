@@ -1,25 +1,18 @@
 import { createRoute, redirect } from '@tanstack/react-router';
-import { supabase } from '@/core/supabase';
-import { DashboardPage } from './components/DashboardPage';
 import { rootRoute } from '@/app/root';
 
-export const dashboardRoute = createRoute({
+export const appRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/dashboard',
-  beforeLoad: async ({ location }) => {
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.getSession();
-
-    if (!session || error) {
+  path: '/app',
+  beforeLoad: ({ context, location }) => {
+    if (!context.auth.isAuthenticated) {
       throw redirect({
-        to: '/login',
+        to: '/sign-in',
         search: {
           redirect: location.pathname,
         },
       });
     }
   },
-  component: () => <DashboardPage />,
+  component: () => <div>App</div>,
 });

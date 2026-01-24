@@ -1,8 +1,9 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '@/core/query-client';
+import { AuthGate } from './auth-gate';
 import '@/core/theme/globals.css';
-import { RouterProvider } from '@tanstack/react-router';
-import { router } from './router';
 
 const rootElement = document.getElementById('root')!;
 
@@ -11,7 +12,9 @@ if (!rootElement.innerHTML) {
 
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <AuthGate />
+      </QueryClientProvider>
     </StrictMode>,
   );
 }

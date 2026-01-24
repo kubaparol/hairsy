@@ -22,8 +22,7 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 
 - API funkcje: `signUp`, `signIn`, `signOut`, `getSession`, `getUser`
 - React hooks: `useSignUp`, `useSignIn`, `useSignOut`, `useSession`, `useUser`
-- Formularz logowania: `SignInForm` w `features/auth/components/sign-in-form.tsx`
-- Ochrona tras: `beforeLoad` w `appRoute` i `signInRoute`
+- Ochrona tras: `beforeLoad` w `appRoute` i `signInRoute` używa `context.auth`
 - System błędów: `SupabaseError` z mapowaniem kodów błędów
 
 ## 2. Architektura Interfejsu Użytkownika
@@ -35,44 +34,29 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 **Trasa: `/sign-up`**
 
 - **Komponent**: `sign-up-form` w `features/auth/components/sign-up-form.tsx`
-- **Route**: `features/auth/route.tsx` (rozszerzenie istniejącego pliku)
-- **Ochrona**: `beforeLoad` sprawdza czy użytkownik jest już zalogowany → przekierowanie do `/app`
+- **Route**: `features/auth/route.tsx`
+- **Ochrona**: `beforeLoad` sprawdza `context.auth.isAuthenticated` → przekierowanie do `/app`
 - **Funkcjonalność**: Formularz rejestracji z polami email, hasło, potwierdzenie hasła, imię, checkboxy zgód GDPR
 
 **Trasa: `/sign-in`**
 
 - **Komponent**: `sign-in-form` w `features/auth/components/sign-in-form.tsx`
-- **Rozszerzenia**:
-  - Link do rejestracji (`/sign-up`)
-  - Link do odzyskiwania hasła (`/forgot-password`)
-- **Ochrona**: `beforeLoad` sprawdza czy użytkownik jest już zalogowany → przekierowanie do `/app`
-
-**Trasa: `/forgot-password`**
-
-- **Komponent**: `forgot-password-form` w `features/auth/components/forgot-password-form.tsx`
 - **Route**: `features/auth/route.tsx`
-- **Ochrona**: `beforeLoad` sprawdza czy użytkownik jest już zalogowany → przekierowanie do `/app`
-- **Funkcjonalność**: Formularz z polem email do wysłania linku resetującego hasło
-
-**Trasa: `/reset-password`**
-
-- **Komponent**: `reset-password-form` w `features/auth/components/reset-password-form.tsx`
-- **Route**: `features/auth/route.tsx`
-- **Ochrona**: `beforeLoad` sprawdza czy użytkownik jest już zalogowany → przekierowanie do `/app`
-- **Query params**: `token` (hash z emaila), `type` (zawsze `recovery`)
-- **Funkcjonalność**: Formularz z polami: nowe hasło, potwierdzenie hasła
+- **Ochrona**: `beforeLoad` sprawdza `context.auth.isAuthenticated` → przekierowanie do `/app`
+- **Funkcjonalność**: Formularz logowania z polami email, hasło oraz linki do rejestracji
 
 #### 2.1.2 Trasy chronione (auth)
 
 **Trasa: `/app`**
 
-- **Ochrona**: `beforeLoad` sprawdza sesję → jeśli brak, przekierowanie do `/sign-in` z parametrem `redirect`
+- **Ochrona**: `beforeLoad` sprawdza `context.auth.isAuthenticated` (dostarczane przez `AuthGate` na bazie `useSession()`) → jeśli brak, przekierowanie do `/sign-in` z parametrem `redirect`
 
 **Trasa: `/onboarding`** (dla OWNER)
 
 - **Ochrona**: `beforeLoad` sprawdza:
   - Czy użytkownik jest zalogowany
   - Czy użytkownik ma rolę `OWNER`
+  - Czy onboarding został już ukończony
 - **Funkcjonalność**: Proces onboardingu salonu (poza zakresem tej specyfikacji)
 
 ### 2.2 Komponenty formularzy
@@ -120,7 +104,6 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 **Dodatkowe elementy UI**:
 
 - Link do strony logowania: "Masz już konto? Zaloguj się"
-- Wskaźnik siły hasła
 - Checkboxy dla wymaganych zgód GDPR:
   - Zgoda na przetwarzanie danych osobowych (wymagana)
   - Zgoda marketingowa (opcjonalna)
@@ -133,7 +116,6 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 **Rozszerzenia**:
 
 - Link do rejestracji: "Nie masz konta? Zarejestruj się" → `/sign-up`
-- Link do odzyskiwania hasła: "Zapomniałeś hasła?" → `/forgot-password`
 
 **Obsługa błędów** (rozszerzenie istniejącej):
 
@@ -147,74 +129,6 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 - Inwalidacja routera: `await router.invalidate()`
 - Przekierowanie do `redirectPath || '/app'`
 
-#### 2.2.3 forgot-password-form
-
-**Lokalizacja**: `apps/app/src/features/auth/components/forgot-password-form.tsx`
-
-**Pola formularza**:
-
-- `email` (string, required, type="email")
-
-**Walidacja po stronie klienta**:
-
-- Email: format email, wymagane
-
-**Obsługa błędów**:
-
-- `ROW_NOT_FOUND`: "Nie znaleziono użytkownika z tym adresem email" (bezpieczny komunikat, nie ujawnia czy email istnieje)
-- `RATE_LIMITED`: "Zbyt wiele prób. Poczekaj chwilę i spróbuj ponownie"
-- Ogólne błędy: wyświetlenie komunikatu z `error.message`
-
-**Akcje po sukcesie**:
-
-- Wyświetlenie komunikatu sukcesu: "Jeśli ten adres email istnieje w systemie, otrzymasz wiadomość z instrukcjami resetowania hasła"
-- Link powrotu do logowania: "Powrót do logowania"
-
-**Hook**: `useResetPassword` z `@/entities/auth/hooks/use-reset-password.ts`
-
-**Dodatkowe elementy UI**:
-
-- Informacja: "Podaj adres email, a wyślemy Ci link do resetowania hasła"
-- Link powrotu do logowania
-
-#### 2.2.4 reset-password-form
-
-**Lokalizacja**: `apps/app/src/features/auth/components/reset-password-form.tsx`
-
-**Pola formularza**:
-
-- `password` (string, required, type="password", minLength=8)
-- `confirmPassword` (string, required, type="password", sameAs="password")
-
-**Walidacja po stronie klienta**:
-
-- Hasło: minimum 8 znaków, wymagane
-- Potwierdzenie hasła: musi być identyczne z hasłem
-
-**Query params** (z URL):
-
-- `token`: hash z linku resetującego
-- `type`: typ akcji (zawsze `recovery`)
-
-**Obsługa błędów**:
-
-- `SESSION_EXPIRED`: "Link resetujący wygasł. Poproś o nowy link"
-- `WEAK_PASSWORD`: "Hasło jest zbyt słabe. Użyj co najmniej 8 znaków"
-- `INVALID_CREDENTIALS`: "Nieprawidłowy lub wygasły link resetujący"
-- Ogólne błędy: wyświetlenie komunikatu z `error.message`
-
-**Akcje po sukcesie**:
-
-- Wyświetlenie komunikatu sukcesu: "Hasło zostało zmienione pomyślnie"
-- Przekierowanie do `/sign-in` po kliknięciu linku
-
-**Hook**: `useUpdatePassword` z `@/entities/auth/hooks/use-update-password.ts`
-
-**Dodatkowe elementy UI**:
-
-- Informacja o wymaganiach dotyczących hasła
-- Link do logowania po sukcesie
-
 ### 2.3 Layouty i tryby wyświetlania
 
 #### 2.3.1 Layout dla tras non-auth
@@ -223,7 +137,7 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 
 **Funkcjonalność**:
 
-- Wspólny layout dla `/sign-in`, `/sign-up`, `/forgot-password`, `/reset-password`
+- Wspólny layout dla `/sign-in`, `/sign-up`
 - Prosty, minimalistyczny design
 - Logo aplikacji
 - Centralnie wyświetlony formularz
@@ -237,8 +151,6 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 </AuthLayout>
 ```
 
-**Uwaga**: W kodzie JSX używamy PascalCase dla komponentów React, ale nazwy plików są z myślnikiem (kebab-case).
-
 #### 2.3.2 Layout dla tras auth
 
 **Komponent**: `app-layout` w `features/app/components/app-layout.tsx`
@@ -249,47 +161,6 @@ Aplikacja posiada już podstawową infrastrukturę autentykacji:
 - Header z menu użytkownika
 - Nawigacja główna
 - Wylogowanie
-
-### 2.4 Komponenty pomocnicze
-
-#### 2.4.1 error-message
-
-**Lokalizacja**: `apps/app/src/shared/ui/components/error-message.tsx`
-
-**Funkcjonalność**:
-
-- Uniwersalny komponent do wyświetlania błędów
-- Obsługa różnych typów błędów (SupabaseError, string, Error)
-- Stylowanie zgodne z Shadcn/UI (Alert component)
-
-**Props**:
-
-```typescript
-interface ErrorMessageProps {
-  error: SupabaseError | Error | string | null;
-  className?: string;
-}
-```
-
-#### 2.4.2 password-strength-indicator
-
-**Lokalizacja**: `apps/app/src/shared/ui/components/password-strength-indicator.tsx`
-
-**Funkcjonalność**:
-
-- Wskaźnik siły hasła
-- Wizualna reprezentacja (bar, kolory)
-- Wskazówki dotyczące wymagań hasła
-
-#### 2.4.3 loading-button
-
-**Lokalizacja**: `apps/app/src/shared/ui/components/loading-button.tsx`
-
-**Funkcjonalność**:
-
-- Przycisk z obsługą stanu ładowania
-- Disabled podczas ładowania
-- Wskaźnik ładowania (spinner)
 
 ## 3. Logika Backendowa
 
@@ -305,43 +176,11 @@ interface ErrorMessageProps {
 - `getSession()` - pobranie sesji
 - `getUser()` - pobranie użytkownika z walidacją serwera
 
-#### 3.1.2 Nowe funkcje API
-
-**resetPassword()**
-
-- **Lokalizacja**: `apps/app/src/entities/auth/api/reset-password.ts`
-- **Funkcjonalność**: Wysyłanie emaila z linkiem resetującym hasło
-- **Supabase API**: `supabase.auth.resetPasswordForEmail(email, options)`
-- **Parametry**:
-  ```typescript
-  interface ResetPasswordOptions {
-    email: string;
-    redirectTo?: string; // URL do przekierowania po kliknięciu linku
-  }
-  ```
-- **Obsługa błędów**: Mapowanie błędów Supabase do `SupabaseError`
-- **Zwraca**: `void` (sukces) lub rzuca `SupabaseError`
-
-**updatePassword()**
-
-- **Lokalizacja**: `apps/app/src/entities/auth/api/update-password.ts`
-- **Funkcjonalność**: Aktualizacja hasła użytkownika (używane po kliknięciu linku resetującego)
-- **Supabase API**: `supabase.auth.updateUser({ password: newPassword })`
-- **Parametry**:
-  ```typescript
-  interface UpdatePasswordOptions {
-    password: string;
-  }
-  ```
-- **Obsługa błędów**: Mapowanie błędów Supabase do `SupabaseError`
-- **Zwraca**: `User` lub rzuca `SupabaseError`
-- **Uwaga**: Wymaga aktywnej sesji (ustawionej przez Supabase po kliknięciu linku)
-
 ### 3.2 API funkcje profilu użytkownika
 
 #### 3.2.1 createProfile()
 
-**Lokalizacja**: `apps/app/src/entities/profile/api/create-profile.ts` (nowa encja)
+**Lokalizacja**: `apps/app/src/entities/profile/api/create-profile.ts`
 
 **Funkcjonalność**: Tworzenie profilu użytkownika podczas rejestracji
 
@@ -353,7 +192,7 @@ supabase
   .insert({
     id: userId,
     email: user.email,
-    role: 'USER',
+    role: role as 'OWNER' | 'USER',
     first_name: firstName,
   })
   .select()
@@ -383,7 +222,7 @@ interface CreateProfileInput {
 
 #### 3.2.2 getProfile()
 
-**Lokalizacja**: `apps/app/src/entities/profile/api/get-profile.ts` (nowa encja)
+**Lokalizacja**: `apps/app/src/entities/profile/api/get-profile.ts`
 
 **Funkcjonalność**: Pobranie profilu użytkownika
 
@@ -412,7 +251,7 @@ supabase
 
 #### 3.3.1 acceptConsents()
 
-**Lokalizacja**: `apps/app/src/entities/consent/api/accept-consents.ts` (nowa encja)
+**Lokalizacja**: `apps/app/src/entities/consent/api/accept-consents.ts`
 
 **Funkcjonalność**: Zapisanie zaakceptowanych zgód użytkownika
 
@@ -468,6 +307,9 @@ interface AcceptConsentsInput {
 **Reguły**:
 
 - Minimum 8 znaków (wymaganie Supabase)
+- Minimum 1 wielka litera
+- Minimum 1 cyfra
+- Minimum 1 znak specjalny
 - Maksymalna długość: 72 znaki (ograniczenie bcrypt)
 - Walidacja po stronie klienta i serwera
 
@@ -509,6 +351,7 @@ interface AcceptConsentsInput {
 - Komunikaty w języku polskim
 - Bezpieczne komunikaty (nie ujawniające informacji o istnieniu użytkownika)
 - Konkretne wskazówki dotyczące rozwiązania problemu
+- Komunikaty w postaci Toasterów z Shadcn/UI
 
 **Przykłady**:
 
@@ -528,12 +371,6 @@ interface AcceptConsentsInput {
 - `enable_signup = true` - rejestracja włączona
 - `enable_confirmations = false` - potwierdzenie email wyłączone (może być zmienione)
 - `secure_password_change = false` - zmiana hasła bez reautentykacji
-
-**Wymagane ustawienia dla resetowania hasła**:
-
-- `enable_signup = true`
-- Konfiguracja SMTP dla wysyłania emaili (w produkcji)
-- Template emaila resetującego hasło (opcjonalnie)
 
 #### 4.1.2 Flow rejestracji
 
@@ -568,32 +405,7 @@ interface AcceptConsentsInput {
    - Jeśli OWNER bez salonu → `/onboarding`
    - W przeciwnym razie → `/app` lub `redirectPath`
 
-#### 4.1.4 Flow resetowania hasła
-
-1. **Użytkownik wypełnia formularz "Zapomniałem hasła"**
-   - Email
-
-2. **Wywołanie `resetPassword()`**
-   - Supabase wysyła email z linkiem resetującym
-   - Link zawiera token i parametr `type=recovery`
-   - Link przekierowuje do `/reset-password?token=...&type=recovery`
-
-3. **Użytkownik klika link w emailu**
-   - Supabase automatycznie ustawia sesję recovery
-   - Przekierowanie do `/reset-password` z tokenem w URL
-
-4. **Użytkownik wypełnia formularz resetowania**
-   - Nowe hasło i potwierdzenie
-
-5. **Wywołanie `updatePassword()`**
-   - Supabase aktualizuje hasło użytkownika
-   - Sesja recovery jest zamieniana na normalną sesję logowania
-
-6. **Przekierowanie użytkownika**
-   - Komunikat sukcesu
-   - Przekierowanie do `/sign-in` (lub automatyczne logowanie, w zależności od konfiguracji)
-
-#### 4.1.5 Flow wylogowania
+#### 4.1.4 Flow wylogowania
 
 1. **Wywołanie `signOut()`**
    - Supabase usuwa sesję lokalną (`scope: 'local'`)
@@ -609,7 +421,7 @@ interface AcceptConsentsInput {
 
 #### 4.2.1 Subskrypcja zmian sesji
 
-**Lokalizacja**: `apps/app/src/app/provider.tsx` (rozszerzenie istniejącego)
+**Lokalizacja**: `apps/app/src/app/auth-gate.tsx`
 
 **Funkcjonalność**:
 
@@ -645,7 +457,7 @@ useEffect(() => {
 **Ręczne odświeżanie**:
 
 - `getUser()` wykonuje request do serwera i weryfikuje sesję
-- Używane w `beforeLoad` tras dla pewności aktualnego stanu
+- Może być używane w miejscach wymagających weryfikacji po stronie serwera (np. loader tras, krytyczne akcje), ale guardy tras bazują na `context.auth`
 
 ### 4.3 Ochrona tras (Route Guards)
 
@@ -654,12 +466,8 @@ useEffect(() => {
 **Wzorzec**:
 
 ```typescript
-beforeLoad: async () => {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (session) {
+beforeLoad: ({ context }) => {
+  if (context.auth.isAuthenticated) {
     throw redirect({ to: '/app' });
   }
 };
@@ -672,13 +480,8 @@ beforeLoad: async () => {
 **Wzorzec**:
 
 ```typescript
-beforeLoad: async ({ location }) => {
-  const {
-    data: { session },
-    error,
-  } = await supabase.auth.getSession();
-
-  if (!session || error) {
+beforeLoad: ({ context, location }) => {
+  if (!context.auth.isAuthenticated) {
     throw redirect({
       to: '/sign-in',
       search: { redirect: location.pathname },
@@ -694,8 +497,12 @@ beforeLoad: async ({ location }) => {
 **Wzorzec**:
 
 ```typescript
-beforeLoad: async () => {
-  // ... standardowy guard auth ...
+beforeLoad: async ({ context }) => {
+  // ... standardowy guard auth (na podstawie context.auth) ...
+  const session = context.auth.session;
+  if (!session) {
+    throw redirect({ to: '/sign-in' });
+  }
 
   const profile = await getProfile(session.user.id);
 
@@ -851,8 +658,6 @@ entities/consent/
 
 - `signUpRoute` - `/sign-up`
 - `signInRoute` - `/sign-in`
-- `forgotPasswordRoute` - `/forgot-password`
-- `resetPasswordRoute` - `/reset-password`
 
 #### 5.2.2 Aktualizacja `app/router.tsx`
 
@@ -862,8 +667,6 @@ entities/consent/
 const routeTree = rootRoute.addChildren([
   signUpRoute,
   signInRoute,
-  forgotPasswordRoute,
-  resetPasswordRoute,
   appRoute,
   // ... inne trasy
 ]);
@@ -1063,23 +866,18 @@ const REQUIRED_CONSENTS = ['privacy_policy_v1', 'terms_of_service_v1'];
 **Frontend**:
 
 - `SignUpForm` - formularz rejestracji (z checkboxami zgód GDPR)
-- `ForgotPasswordForm` - formularz resetowania hasła
-- `ResetPasswordForm` - formularz zmiany hasła
+- `SignInForm` - formularz logowania
 - `AuthLayout` - layout dla tras autentykacji
 - `ErrorMessage` - komponent wyświetlania błędów (rozszerzenie)
 
 **Backend/API**:
 
-- `resetPassword()` - wysyłanie linku resetującego
-- `updatePassword()` - aktualizacja hasła
 - `createProfile()` - tworzenie profilu użytkownika
 - `getProfile()` - pobranie profilu użytkownika
 - `acceptConsents()` - akceptacja zgód (wywoływane podczas rejestracji)
 
 **Hooks**:
 
-- `useResetPassword()` - hook dla resetowania hasła
-- `useUpdatePassword()` - hook dla aktualizacji hasła
 - `useProfile()` - hook dla profilu użytkownika
 - `useUserRole()` - hook dla roli użytkownika
 - `useConsents()` - hook dla zgód
@@ -1088,16 +886,14 @@ const REQUIRED_CONSENTS = ['privacy_policy_v1', 'terms_of_service_v1'];
 **Trasy**:
 
 - `/sign-up` - rejestracja (z formularzem zgód GDPR)
-- `/forgot-password` - resetowanie hasła
-- `/reset-password` - zmiana hasła
+- `/sign-in` - logowanie
 
 ### 9.2 Rozszerzenia istniejących komponentów
 
-- `SignInForm` - dodanie linków do rejestracji i resetowania hasła
-- `signInRoute` - bez zmian w logice, tylko rozszerzenie UI
-- `appRoute` - sprawdzanie sesji w `beforeLoad`
-- `app/provider.tsx` - dodanie subskrypcji zmian sesji
-- `app/router.tsx` - dodanie nowych tras
+- `appRoute` - sprawdzanie `context.auth.isAuthenticated` w `beforeLoad`
+- `app/auth-gate.tsx` - dostarczenie `context.auth` do routera (React Query → Router Context) + subskrypcja `onAuthStateChange`
+- `app/root.tsx` - `createRootRouteWithContext` (typowany Router Context)
+- `app/router.tsx` - inicjalizacja routera z `context` (uzupełniane w `AuthGate`)
 
 ### 9.3 Nowe encje
 
