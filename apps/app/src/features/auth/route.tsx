@@ -1,5 +1,6 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 import { rootRoute } from '@/app/root';
+import { SignInPage, SignUpPage } from './components';
 
 export const signInRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -16,5 +17,18 @@ export const signInRoute = createRoute({
       });
     }
   },
-  component: () => <div>SignInForm</div>,
+  component: SignInPage,
+});
+
+export const signUpRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/sign-up',
+  beforeLoad: ({ context }) => {
+    if (context.auth.isAuthenticated) {
+      throw redirect({
+        to: '/app',
+      });
+    }
+  },
+  component: SignUpPage,
 });
