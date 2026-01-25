@@ -21,6 +21,7 @@ import {
 import { Input } from '@/shared/ui/components/input';
 import { Button } from '@/shared/ui/components/button';
 import { Spinner } from '@/shared/ui/components/spinner';
+import { PasswordInput } from '@/shared/ui/components/password-input';
 
 // Zod validation schema for sign-up form
 const signUpSchema = z
@@ -155,8 +156,6 @@ export function SignUpForm({ role, onSuccess }: SignUpFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <h2 className="text-2xl font-semibold tracking-tight">Utwórz konto</h2>
-
         {/* Email field */}
         <FormField
           control={form.control}
@@ -205,8 +204,7 @@ export function SignUpForm({ role, onSuccess }: SignUpFormProps) {
             <FormItem>
               <FormLabel>Hasło</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
+                <PasswordInput
                   placeholder="••••••••"
                   autoComplete="new-password"
                   {...field}
@@ -225,8 +223,7 @@ export function SignUpForm({ role, onSuccess }: SignUpFormProps) {
             <FormItem>
               <FormLabel>Potwierdź hasło</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
+                <PasswordInput
                   placeholder="••••••••"
                   autoComplete="new-password"
                   {...field}
@@ -264,8 +261,8 @@ export function SignUpForm({ role, onSuccess }: SignUpFormProps) {
         >
           {isPending ? (
             <>
-              <Spinner />
-              <span>Rejestracja...</span>
+              <Spinner className="mr-2" />
+              Rejestrowanie...
             </>
           ) : (
             'Zarejestruj się'

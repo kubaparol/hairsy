@@ -1,48 +1,56 @@
 import * as React from 'react';
 import { cn } from '@/shared/utils/cn';
-import { Card, CardContent } from '@/shared/ui/components/card';
+import { Scissors } from 'lucide-react';
 
 export interface AuthLayoutProps {
   children: React.ReactNode;
   backgroundVariant?: 'user' | 'owner' | 'default';
 }
 
-/**
- * Shared layout for authentication pages (sign-in, sign-up).
- * Provides centered content, logo, and animated background based on selected role.
- */
 export function AuthLayout({
   children,
   backgroundVariant = 'default',
 }: AuthLayoutProps) {
   return (
-    <div className="relative flex min-h-screen items-center justify-center">
-      {/* Animated background */}
-      <div
-        className={cn('absolute inset-0 -z-10 transition-all duration-500', {
-          'bg-linear-to-br from-blue-50 via-white to-indigo-50 dark:from-blue-950/20 dark:via-background dark:to-indigo-950/20':
-            backgroundVariant === 'user',
-          'bg-linear-to-br from-violet-50 via-white to-purple-50 dark:from-violet-950/20 dark:via-background dark:to-purple-950/20':
-            backgroundVariant === 'owner',
-          'bg-background': backgroundVariant === 'default',
-        })}
-      />
-
-      {/* Content container */}
-      <div className="w-full max-w-md px-4">
-        {/* Logo */}
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold tracking-tight">Hairsy</h1>
-          <p className="text-muted-foreground mt-2 text-sm">
-            Twój salon piękności w kieszeni
-          </p>
-        </div>
-
-        {/* Auth form card */}
-        <Card>
-          <CardContent>{children}</CardContent>
-        </Card>
+    <div
+      className={cn(
+        'min-h-screen flex flex-col items-center justify-center p-4 transition-colors duration-500',
+        backgroundVariant === 'owner' ? 'bg-foreground/5' : 'bg-background',
+      )}
+    >
+      {/* Background decoration */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div
+          className={cn(
+            'absolute -top-1/2 -right-1/2 w-full h-full rounded-full blur-3xl opacity-20 transition-all duration-500',
+            backgroundVariant === 'owner' ? 'bg-primary/30' : 'bg-primary/10',
+          )}
+        />
+        <div
+          className={cn(
+            'absolute -bottom-1/2 -left-1/2 w-full h-full rounded-full blur-3xl opacity-20 transition-all duration-500',
+            backgroundVariant === 'owner'
+              ? 'bg-muted-foreground/20'
+              : 'bg-muted/30',
+          )}
+        />
       </div>
+
+      {/* Logo */}
+      <div className="relative z-10 flex items-center gap-2 mb-8">
+        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary">
+          <Scissors className="w-5 h-5 text-primary-foreground" />
+        </div>
+        <span className="text-2xl font-bold tracking-tight">Hairsy</span>
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-md">{children}</div>
+
+      {/* Footer */}
+      <p className="relative z-10 mt-8 text-xs text-muted-foreground text-center">
+        &copy; {new Date().getFullYear()} Hairsy. Wszelkie prawa zastrzeżone.
+      </p>
     </div>
   );
 }

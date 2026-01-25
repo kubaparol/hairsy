@@ -2,6 +2,13 @@ import { useSearch } from '@tanstack/react-router';
 import { AuthLayout } from './auth-layout';
 import { SignInForm } from './sign-in-form';
 import { AuthLinks } from './auth-links';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/shared/ui/components/card';
 
 /**
  * Sign-in page component.
@@ -12,14 +19,20 @@ export function SignInPage() {
   const redirectPath = (search as { redirect?: string })?.redirect;
 
   return (
-    <AuthLayout backgroundVariant="default">
-      <div className="space-y-6">
-        {/* Login form */}
-        <SignInForm redirectPath={redirectPath} />
+    <AuthLayout>
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Zaloguj się</CardTitle>
+          <CardDescription>
+            Wprowadź swoje dane aby uzyskać dostęp do konta
+          </CardDescription>
+        </CardHeader>
 
-        {/* Link to sign-up */}
-        <AuthLinks variant="sign-in" />
-      </div>
+        <CardContent className="space-y-6">
+          <SignInForm redirectPath={redirectPath} />
+          <AuthLinks variant="sign-in" />
+        </CardContent>
+      </Card>
     </AuthLayout>
   );
 }

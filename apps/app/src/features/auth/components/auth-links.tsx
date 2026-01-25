@@ -10,11 +10,11 @@ export interface AuthLinksProps {
 export function AuthLinks({ variant }: AuthLinksProps) {
   if (variant === 'sign-in') {
     return (
-      <p className="text-muted-foreground mt-6 text-center text-sm">
+      <p className="text-center text-sm text-muted-foreground">
         Nie masz konta?{' '}
         <Link
           to="/sign-up"
-          className="text-primary hover:underline font-medium"
+          className="font-medium text-primary hover:underline underline-offset-4"
         >
           Zarejestruj się
         </Link>
@@ -23,11 +23,11 @@ export function AuthLinks({ variant }: AuthLinksProps) {
   }
 
   return (
-    <p className="text-muted-foreground mt-6 text-center text-sm">
+    <p className="text-center text-sm text-muted-foreground">
       Masz już konto?{' '}
       <Link
         to="/sign-in"
-        className="text-primary hover:underline font-medium"
+        className="font-medium text-primary hover:underline underline-offset-4"
         search={{
           redirect: undefined,
         }}

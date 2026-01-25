@@ -18,6 +18,7 @@ import {
 import { Input } from '@/shared/ui/components/input';
 import { Button } from '@/shared/ui/components/button';
 import { Spinner } from '@/shared/ui/components/spinner';
+import { PasswordInput } from '@/shared/ui/components/password-input';
 
 // Zod validation schema for sign-in form
 const signInSchema = z.object({
@@ -100,8 +101,6 @@ export function SignInForm({ redirectPath, onSuccess }: SignInFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <h2 className="text-2xl font-semibold tracking-tight">Zaloguj się</h2>
-
         {/* Root error message (e.g., invalid credentials) */}
         {form.formState.errors.root && (
           <div
@@ -140,8 +139,7 @@ export function SignInForm({ redirectPath, onSuccess }: SignInFormProps) {
             <FormItem>
               <FormLabel>Hasło</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
+                <PasswordInput
                   placeholder="••••••••"
                   autoComplete="current-password"
                   {...field}
@@ -161,8 +159,8 @@ export function SignInForm({ redirectPath, onSuccess }: SignInFormProps) {
         >
           {isPending ? (
             <>
-              <Spinner />
-              <span>Logowanie...</span>
+              <Spinner className="mr-2" />
+              Logowanie...
             </>
           ) : (
             'Zaloguj się'

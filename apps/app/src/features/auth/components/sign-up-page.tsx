@@ -3,6 +3,13 @@ import { AuthLayout } from './auth-layout';
 import { RoleSwitcher, type UserRole } from './role-switcher';
 import { SignUpForm } from './sign-up-form';
 import { AuthLinks } from './auth-links';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/shared/ui/components/card';
 
 /**
  * Sign-up page component.
@@ -11,23 +18,22 @@ import { AuthLinks } from './auth-links';
 export function SignUpPage() {
   const [selectedRole, setSelectedRole] = React.useState<UserRole>('USER');
 
-  // Map role to background variant
-  const backgroundVariant = selectedRole === 'OWNER' ? 'owner' : 'user';
-
   return (
-    <AuthLayout backgroundVariant={backgroundVariant}>
-      <div className="space-y-6">
-        {/* Role switcher */}
-        <div className="flex justify-center">
+    <AuthLayout backgroundVariant={selectedRole === 'OWNER' ? 'owner' : 'user'}>
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Utwórz konto</CardTitle>
+          <CardDescription>
+            Dołącz do Hairsy i zarządzaj swoimi wizytami
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="space-y-6">
           <RoleSwitcher value={selectedRole} onChange={setSelectedRole} />
-        </div>
-
-        {/* Registration form */}
-        <SignUpForm role={selectedRole} />
-
-        {/* Link to sign-in */}
-        <AuthLinks variant="sign-up" />
-      </div>
+          <SignUpForm role={selectedRole} />
+          <AuthLinks variant="sign-up" />
+        </CardContent>
+      </Card>
     </AuthLayout>
   );
 }

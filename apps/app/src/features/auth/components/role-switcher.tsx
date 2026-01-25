@@ -19,7 +19,10 @@ export function RoleSwitcher({
 }: RoleSwitcherProps) {
   return (
     <Tabs value={value} onValueChange={(next) => onChange(next as UserRole)}>
-      <TabsList aria-label="Wybór roli użytkownika" className="inline-flex">
+      <TabsList
+        aria-label="Wybór roli użytkownika"
+        className="inline-flex mx-auto"
+      >
         <TabsTrigger value="USER" disabled={disabled} className="px-6">
           Klient
         </TabsTrigger>
