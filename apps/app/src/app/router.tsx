@@ -9,6 +9,12 @@ export const router = createRouter({
   routeTree,
   defaultPreload: 'intent',
   scrollRestoration: true,
+  defaultPendingComponent: () => (
+    <div className="flex h-screen items-center justify-center">
+      <div className="text-muted-foreground">Loading...</div>
+    </div>
+  ),
+  defaultPendingMinMs: 100,
   context: {
     auth: undefined!,
   },
