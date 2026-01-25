@@ -45,8 +45,8 @@ export function ConsentCheckboxes({
           >
             <Checkbox
               id={item.id}
-              checked={value.includes(item.policyVersion)}
-              onCheckedChange={() => handleToggle(item.policyVersion)}
+              checked={value.includes(item.id)}
+              onCheckedChange={() => handleToggle(item.id)}
               aria-describedby={
                 item.description ? `${item.id}-description` : undefined
               }
