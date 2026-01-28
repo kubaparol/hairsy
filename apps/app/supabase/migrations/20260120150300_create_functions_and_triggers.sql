@@ -103,6 +103,7 @@ begin
     end if;
 
     -- check if salon has at least one active service
+    -- use SECURITY DEFINER to bypass RLS and avoid recursion
     select exists (
         select 1 from services
         where salon_id = p_salon_id and deleted_at is null
@@ -110,7 +111,7 @@ begin
 
     return v_has_services;
 end;
-$$ language plpgsql stable;
+$$ language plpgsql stable security definer;
 
 comment on function is_salon_complete is 'validates salon completeness: all required fields, working hours, and active services';
 

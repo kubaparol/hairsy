@@ -9,6 +9,8 @@
     "preview": "vite preview",
     "lint": "eslint --max-warnings 0",
     "check-types": "tsc --noEmit",
+    "db:migrate": "supabase migration up",
+    "db:reset": "supabase db reset",
     "db:typegen": "supabase gen types typescript --local > src/kernel/db/database.types.ts"
   },
   "dependencies": {
