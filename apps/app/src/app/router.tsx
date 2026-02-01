@@ -4,6 +4,11 @@ import { signInRoute, signUpRoute } from '@/features/auth/route';
 import { appRoute } from '@/features/dashboard/route';
 import { onboardingRoute } from '@/features/onboarding/route';
 import { ownerServicesRoute } from '@/features/owner-services/route';
+import {
+  salonsRoute,
+  salonDetailRoute,
+  salonBookRoute,
+} from '@/features/client-salons/route';
 
 const routeTree = rootRoute.addChildren([
   signInRoute,
@@ -11,6 +16,9 @@ const routeTree = rootRoute.addChildren([
   appRoute,
   onboardingRoute,
   ownerServicesRoute,
+  salonsRoute,
+  salonDetailRoute,
+  salonBookRoute,
 ]);
 
 export const router = createRouter({

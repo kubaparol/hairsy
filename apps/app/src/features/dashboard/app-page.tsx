@@ -1,10 +1,12 @@
+import { Link } from '@tanstack/react-router';
 import { useUserRole } from '@/entities/profile';
 import { OwnerLayout } from '@/features/owner-layout';
+import { Button } from '@/shared/ui/components/button';
 
 /**
  * App dashboard page after login.
  * - OWNER: panel z sidebarem (Kalendarz, Usługi, Ustawienia, Konto).
- * - USER: placeholder for client panel.
+ * - USER: placeholder for client panel with link to salon listing.
  */
 export function AppPage() {
   const role = useUserRole();
@@ -30,6 +32,11 @@ export function AppPage() {
         </h1>
         <p className="mt-1">Twoje wizyty i rezerwacje.</p>
       </div>
+      <Button asChild variant="secondary">
+        <Link to="/salons" search={{ city: undefined }}>
+          Znajdź salon
+        </Link>
+      </Button>
     </div>
   );
 }
