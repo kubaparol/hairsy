@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Link } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { useUser } from '@/entities/auth';
 import { useSalonByOwner } from '@/entities/salon';
+import { OwnerLayout } from '@/features/owner-layout';
 import {
   useServicesBySalon,
   useCreateService,
@@ -114,84 +114,83 @@ export function ServicesPage() {
   const isFormSubmitting = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <div className="container mx-auto max-w-4xl space-y-6 py-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Usługi</h1>
-          <p className="text-muted-foreground">
-            Zarządzaj usługami oferowanymi w salonie
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button asChild variant="outline" size="sm">
-            <Link to="/app">Panel główny</Link>
-          </Button>
+    <OwnerLayout>
+      <div className="container mx-auto max-w-4xl space-y-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold">Usługi</h1>
+            <p className="text-muted-foreground">
+              Zarządzaj usługami oferowanymi w salonie
+            </p>
+          </div>
           <Button onClick={handleAdd} size="sm">
             Dodaj usługę
           </Button>
         </div>
-      </div>
 
-      {isLoading ? (
-        <Skeleton className="h-64 w-full rounded-lg" />
-      ) : !services?.length ? (
-        <Empty>
-          <EmptyHeader>
-            <EmptyTitle>Brak usług</EmptyTitle>
-            <EmptyDescription>
-              Dodaj pierwszą usługę, aby klienci mogli rezerwować wizyty.
-            </EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Button onClick={handleAdd}>Dodaj usługę</Button>
-          </EmptyContent>
-        </Empty>
-      ) : (
-        <div className="rounded-lg border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nazwa</TableHead>
-                <TableHead className="text-right">Czas</TableHead>
-                <TableHead className="text-right">Cena</TableHead>
-                <TableHead className="w-[120px] text-right">Akcje</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {services.map((service) => (
-                <TableRow key={service.id}>
-                  <TableCell className="font-medium">{service.name}</TableCell>
-                  <TableCell className="text-right">
-                    {service.duration_minutes} min
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {service.price} PLN
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEdit(service)}
-                      >
-                        Edytuj
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-destructive hover:text-destructive"
-                        onClick={() => handleDeleteClick(service)}
-                      >
-                        Usuń
-                      </Button>
-                    </div>
-                  </TableCell>
+        {isLoading ? (
+          <Skeleton className="h-64 w-full rounded-lg" />
+        ) : !services?.length ? (
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>Brak usług</EmptyTitle>
+              <EmptyDescription>
+                Dodaj pierwszą usługę, aby klienci mogli rezerwować wizyty.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button onClick={handleAdd}>Dodaj usługę</Button>
+            </EmptyContent>
+          </Empty>
+        ) : (
+          <div className="rounded-lg border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nazwa</TableHead>
+                  <TableHead className="text-right">Czas</TableHead>
+                  <TableHead className="text-right">Cena</TableHead>
+                  <TableHead className="w-[120px] text-right">Akcje</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+              </TableHeader>
+              <TableBody>
+                {services.map((service) => (
+                  <TableRow key={service.id}>
+                    <TableCell className="font-medium">
+                      {service.name}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {service.duration_minutes} min
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {service.price} PLN
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEdit(service)}
+                        >
+                          Edytuj
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => handleDeleteClick(service)}
+                        >
+                          Usuń
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </div>
 
       <ServiceFormDialog
         open={formOpen}
@@ -209,6 +208,6 @@ export function ServicesPage() {
         onConfirm={handleDeleteConfirm}
         isDeleting={deleteMutation.isPending}
       />
-    </div>
+    </OwnerLayout>
   );
 }
