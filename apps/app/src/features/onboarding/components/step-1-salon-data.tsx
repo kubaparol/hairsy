@@ -12,6 +12,7 @@ import {
 import { Input } from '@/shared/ui/components/input';
 import { Textarea } from '@/shared/ui/components/textarea';
 import { Button } from '@/shared/ui/components/button';
+import { Alert, AlertDescription } from '@/shared/ui/components/alert';
 import type { CreateSalonInput } from '@/entities/salon';
 
 const salonDataSchema = z.object({
@@ -60,6 +61,16 @@ export function Step1SalonData({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className="space-y-6">
+        <Alert
+          variant="default"
+          className="border-amber-500/50 bg-amber-500/10"
+        >
+          <AlertDescription>
+            Bez uzupełnienia nazwy i telefonu salon nie będzie widoczny w
+            wyszukiwarce dla klientów. Możesz zapisać dane i wrócić do tego
+            kroku później.
+          </AlertDescription>
+        </Alert>
         <FormField
           control={form.control}
           name="name"

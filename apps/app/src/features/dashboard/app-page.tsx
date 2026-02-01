@@ -50,6 +50,11 @@ export function AppPage() {
           <p className="mt-1">
             Kalendarz, usługi i ustawienia salonu będą dostępne w tym miejscu.
           </p>
+          <div className="mt-4 flex gap-2">
+            <Button asChild size="sm" variant="secondary">
+              <Link to="/owner/services">Usługi</Link>
+            </Button>
+          </div>
         </div>
       </div>
     );

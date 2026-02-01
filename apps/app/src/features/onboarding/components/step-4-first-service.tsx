@@ -50,7 +50,8 @@ export interface Step4FirstServiceProps {
 }
 
 /**
- * Step 4: Add first service
+ * Step 4: Add first service (minimum one required for salon to be visible).
+ * Owner can add more services later in panel Usługi.
  */
 export function Step4FirstService({
   onSubmit,
@@ -78,6 +79,10 @@ export function Step4FirstService({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className="space-y-6">
+        <p className="text-sm text-muted-foreground">
+          Dodaj przynajmniej jedną usługę — bez niej salon nie będzie widoczny
+          dla klientów. Kolejne usługi dodasz później w panelu Usługi.
+        </p>
         <FormField
           control={form.control}
           name="name"
@@ -166,7 +171,7 @@ export function Step4FirstService({
           <Button type="button" onClick={onBack} variant="outline">
             Wstecz
           </Button>
-          <Button type="submit">Zakończ</Button>
+          <Button type="submit">Dodaj usługę i zakończ</Button>
         </div>
       </form>
     </Form>

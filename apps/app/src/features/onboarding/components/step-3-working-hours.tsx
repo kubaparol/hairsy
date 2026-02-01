@@ -24,14 +24,27 @@ const DAYS_OF_WEEK = [
   { value: 6, label: 'Sobota' },
 ] as const;
 
+const daySchema = z.object({
+  day_of_week: z.number().min(0).max(6),
+  isOpen: z.boolean(),
+  open_time: z.string().optional(),
+  close_time: z.string().optional(),
+});
+
 const workingHoursSchema = z.object({
-  days: z.array(
-    z.object({
-      day_of_week: z.number().min(0).max(6),
-      isOpen: z.boolean(),
-      open_time: z.string().optional(),
-      close_time: z.string().optional(),
-    }),
+  days: z.array(daySchema).refine(
+    (days) => {
+      for (const day of days) {
+        if (day.isOpen && day.open_time && day.close_time) {
+          if (day.open_time >= day.close_time) return false;
+        }
+      }
+      return true;
+    },
+    {
+      message:
+        'Godzina zamknięcia musi być późniejsza niż godzina otwarcia dla każdego otwartego dnia.',
+    },
   ),
 });
 
@@ -166,6 +179,12 @@ export function Step3WorkingHours({
             );
           })}
         </div>
+
+        {form.formState.errors.days?.message && (
+          <p className="text-sm font-medium text-destructive">
+            {form.formState.errors.days.message}
+          </p>
+        )}
 
         <div className="flex items-center justify-between">
           <Button

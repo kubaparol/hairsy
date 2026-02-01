@@ -11,6 +11,7 @@ import {
 } from '@/shared/ui/components/form';
 import { Input } from '@/shared/ui/components/input';
 import { Button } from '@/shared/ui/components/button';
+import { Alert, AlertDescription } from '@/shared/ui/components/alert';
 import type { CreateSalonInput } from '@/entities/salon';
 
 const addressSchema = z.object({
@@ -64,6 +65,16 @@ export function Step2Address({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className="space-y-6">
+        <Alert
+          variant="default"
+          className="border-amber-500/50 bg-amber-500/10"
+        >
+          <AlertDescription>
+            Bez pełnego adresu (ulica, numer, kod pocztowy, miasto) salon nie
+            będzie widoczny w wyszukiwarce. Możesz zapisać dane i wrócić do tego
+            kroku później.
+          </AlertDescription>
+        </Alert>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <FormField
             control={form.control}
