@@ -39,5 +39,13 @@ export function AuthGate() {
     return () => subscription.unsubscribe();
   }, [queryClient]);
 
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
   return <RouterProvider router={router} context={{ auth }} />;
 }

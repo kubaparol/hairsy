@@ -22,7 +22,11 @@ export const router = createRouter({
   ),
   defaultPendingMinMs: 100,
   context: {
-    auth: undefined!,
+    auth: {
+      session: null,
+      isAuthenticated: false,
+      isLoading: true,
+    },
   },
 });
 
