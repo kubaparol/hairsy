@@ -1,6 +1,7 @@
 import { Link, useParams, useSearch } from '@tanstack/react-router';
 import { useSalon } from '@/entities/salon';
 import { useService } from '@/entities/service';
+import { PublicLayout } from '@/features/public-header';
 import { salonBookRoute } from './route';
 import { Button } from '@/shared/ui/components/button';
 import {
@@ -35,82 +36,90 @@ export function SalonBookPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-svh flex-col gap-6 p-4 md:p-6">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-24 w-full" />
-      </div>
+      <PublicLayout>
+        <div className="container mx-auto flex min-h-svh flex-col gap-6 p-4 md:p-6">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-24 w-full" />
+        </div>
+      </PublicLayout>
     );
   }
 
   if (notFound) {
     return (
-      <div className="flex min-h-svh flex-col gap-6 p-4 md:p-6">
-        <Button variant="ghost" asChild>
-          <Link to="/salons" search={{ city: undefined }}>
-            ← Wróć do listy
-          </Link>
-        </Button>
-        <Empty>
-          <EmptyHeader>
-            <EmptyTitle>Nie można wybrać terminu</EmptyTitle>
-            <EmptyDescription>
-              Salon lub usługa nie jest dostępna. Wróć do szczegółów salonu i
-              wybierz usługę ponownie.
-            </EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Button asChild>
-              <Link to="/salons/$salonId" params={{ salonId: salonId ?? '' }}>
-                Powrót do salonu
-              </Link>
-            </Button>
-          </EmptyContent>
-        </Empty>
-      </div>
+      <PublicLayout>
+        <div className="container mx-auto flex min-h-svh flex-col gap-6 p-4 md:p-6">
+          <Button variant="ghost" asChild>
+            <Link to="/salons" search={{ city: undefined }}>
+              ← Wróć do listy
+            </Link>
+          </Button>
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>Nie można wybrać terminu</EmptyTitle>
+              <EmptyDescription>
+                Salon lub usługa nie jest dostępna. Wróć do szczegółów salonu i
+                wybierz usługę ponownie.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button asChild>
+                <Link to="/salons/$salonId" params={{ salonId: salonId ?? '' }}>
+                  Powrót do salonu
+                </Link>
+              </Button>
+            </EmptyContent>
+          </Empty>
+        </div>
+      </PublicLayout>
     );
   }
 
   return (
-    <div className="flex min-h-svh flex-col gap-6 p-4 md:p-6">
-      <Button variant="ghost" size="sm" asChild>
-        <Link to="/salons/$salonId" params={{ salonId }} className="gap-1">
-          <ArrowLeft className="size-4" />
-          Wróć do salonu
-        </Link>
-      </Button>
+    <PublicLayout>
+      <div className="container mx-auto flex min-h-svh flex-col gap-6 p-4 md:p-6">
+        <Button variant="ghost" size="sm" asChild>
+          <Link to="/salons/$salonId" params={{ salonId }} className="gap-1">
+            <ArrowLeft className="size-4" />
+            Wróć do salonu
+          </Link>
+        </Button>
 
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Wybór terminu</h1>
-        <p className="text-muted-foreground text-sm">
-          Wybierz dostępny termin wizyty.
-        </p>
-      </header>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Calendar className="size-4" />
-            {salon.name ?? 'Salon'}
-          </CardTitle>
-          {service && (
-            <CardDescription>
-              {service.name} · {service.duration_minutes} min · {service.price}{' '}
-              zł
-            </CardDescription>
-          )}
-        </CardHeader>
-        <CardContent>
+        <header className="space-y-1">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Wybór terminu
+          </h1>
           <p className="text-muted-foreground text-sm">
-            Wybór dostępnych slotów czasowych będzie dostępny w kolejnej wersji
-            (funkcjonalność 5.4 – Availability and Booking).
+            Wybierz dostępny termin wizyty.
           </p>
-          <Button asChild className="mt-4">
-            <Link to="/salons/$salonId" params={{ salonId }}>
-              Wróć do salonu
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+        </header>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Calendar className="size-4" />
+              {salon.name ?? 'Salon'}
+            </CardTitle>
+            {service && (
+              <CardDescription>
+                {service.name} · {service.duration_minutes} min ·{' '}
+                {service.price} zł
+              </CardDescription>
+            )}
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">
+              Wybór dostępnych slotów czasowych będzie dostępny w kolejnej
+              wersji (funkcjonalność 5.4 – Availability and Booking).
+            </p>
+            <Button asChild className="mt-4">
+              <Link to="/salons/$salonId" params={{ salonId }}>
+                Wróć do salonu
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    </PublicLayout>
   );
 }

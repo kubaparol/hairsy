@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useCompleteSalons } from '@/entities/salon';
+import { PublicLayout } from '@/features/public-header';
 import { Input } from '@/shared/ui/components/input';
 import { Button } from '@/shared/ui/components/button';
 import {
@@ -51,96 +52,109 @@ export function SalonsPage() {
     });
   };
 
-  const showEmptyNoCity = !submittedCity && !isLoading;
-  const showEmptyNoResults =
+  const showEmptyWithCity =
     submittedCity && data && data.data.length === 0 && !isFetching;
+  const showEmptyNoSalons =
+    !submittedCity && data && data.data.length === 0 && !isFetching;
 
   return (
-    <div className="flex min-h-svh flex-col gap-6 p-4 md:p-6">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Znajdź salon</h1>
-        <p className="text-muted-foreground text-sm">
-          Wpisz miasto, aby zobaczyć listę salonów.
-        </p>
-      </header>
-
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="text-muted-foreground absolute left-3 top-1/2 size-4 -translate-y-1/2" />
-          <Input
-            type="text"
-            placeholder="np. Warszawa, Kraków"
-            value={cityInput}
-            onChange={(e) => setCityInput(e.target.value)}
-            className="pl-9"
-            aria-label="Miasto"
-          />
-        </div>
-        <Button type="submit" variant="default">
-          Szukaj
-        </Button>
-      </form>
-
-      {showEmptyNoCity && (
-        <Empty className="flex-1 py-12">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <Search className="size-6" />
-            </EmptyMedia>
-            <EmptyTitle>Wpisz nazwę miasta</EmptyTitle>
-            <EmptyDescription>
-              Aby zobaczyć salony, wpisz miasto w pole powyżej i kliknij Szukaj.
-              Lista pokazuje tylko kompletne i aktywne salony, posortowane
-              alfabetycznie.
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      )}
-
-      {showEmptyNoResults && (
-        <Empty className="flex-1 py-12">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <Search className="size-6" />
-            </EmptyMedia>
-            <EmptyTitle>Brak salonów w tym mieście</EmptyTitle>
-            <EmptyDescription>
-              W miejscowości &quot;{submittedCity}&quot; nie znaleziono salonów.
-              Spróbuj innego miasta lub sprawdź pisownię.
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      )}
-
-      {isLoading && submittedCity && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <Card key={i}>
-              <CardHeader>
-                <Skeleton className="h-5 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-4 w-full" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-
-      {data && data.data.length > 0 && (
-        <section className="space-y-4" aria-label="Lista salonów">
+    <PublicLayout>
+      <div className="container mx-auto flex min-h-svh flex-col gap-6 p-4 md:p-6">
+        <header className="space-y-1">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Znajdź salon
+          </h1>
           <p className="text-muted-foreground text-sm">
-            Znaleziono {data.count} salonów w &quot;{submittedCity}&quot;
+            {submittedCity
+              ? `Salony w mieście "${submittedCity}"`
+              : 'Wszystkie salony'}
           </p>
+        </header>
+
+        <form onSubmit={handleSubmit} className="flex gap-2">
+          <div className="relative flex-1">
+            <Search className="text-muted-foreground absolute left-3 top-1/2 size-4 -translate-y-1/2" />
+            <Input
+              type="text"
+              placeholder="Filtruj po mieście, np. Warszawa, Kraków"
+              value={cityInput}
+              onChange={(e) => setCityInput(e.target.value)}
+              className="pl-9"
+              aria-label="Miasto"
+            />
+          </div>
+          <Button type="submit" variant="default">
+            Szukaj
+          </Button>
+        </form>
+
+        {showEmptyWithCity && (
+          <Empty className="flex-1 py-12">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <Search className="size-6" />
+              </EmptyMedia>
+              <EmptyTitle>Brak salonów w tym mieście</EmptyTitle>
+              <EmptyDescription>
+                W miejscowości &quot;{submittedCity}&quot; nie znaleziono
+                salonów. Spróbuj innego miasta lub sprawdź pisownię.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        )}
+
+        {showEmptyNoSalons && (
+          <Empty className="flex-1 py-12">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <Search className="size-6" />
+              </EmptyMedia>
+              <EmptyTitle>Brak salonów</EmptyTitle>
+              <EmptyDescription>
+                W systemie nie ma jeszcze żadnych salonów. Sprawdź ponownie
+                później lub jeśli jesteś właścicielem salonu, zarejestruj się i
+                dodaj swój salon.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        )}
+
+        {isLoading && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {data.data.map((salon) => (
-              <SalonCard key={salon.id!} salon={salon} />
+            {[1, 2, 3].map((i) => (
+              <Card key={i}>
+                <CardHeader>
+                  <Skeleton className="h-5 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-4 w-full" />
+                </CardContent>
+              </Card>
             ))}
           </div>
-        </section>
-      )}
-    </div>
+        )}
+
+        {data && data.data.length > 0 && (
+          <section className="space-y-4" aria-label="Lista salonów">
+            <p className="text-muted-foreground text-sm">
+              Znaleziono {data.count}{' '}
+              {data.count === 1
+                ? 'salon'
+                : data.count < 5
+                  ? 'salony'
+                  : 'salonów'}
+              {submittedCity && ` w "${submittedCity}"`}
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {data.data.map((salon) => (
+                <SalonCard key={salon.id!} salon={salon} />
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    </PublicLayout>
   );
 }
 

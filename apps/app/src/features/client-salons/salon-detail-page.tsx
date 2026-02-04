@@ -2,6 +2,7 @@ import { Link, useParams } from '@tanstack/react-router';
 import { useSalon } from '@/entities/salon';
 import { useServicesBySalon } from '@/entities/service';
 import { useWorkingHoursBySalon } from '@/entities/working-hours';
+import { PublicLayout } from '@/features/public-header';
 import { salonDetailRoute } from './route';
 import { Button } from '@/shared/ui/components/button';
 import {
@@ -52,39 +53,43 @@ export function SalonDetailPage() {
 
   if (salonLoading) {
     return (
-      <div className="flex min-h-svh flex-col gap-6 p-4 md:p-6">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-32 w-full" />
-        <Skeleton className="h-48 w-full" />
-      </div>
+      <PublicLayout>
+        <div className="container mx-auto flex min-h-svh flex-col gap-6 p-4 md:p-6">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-48 w-full" />
+        </div>
+      </PublicLayout>
     );
   }
 
   if (salonError || !salon) {
     return (
-      <div className="flex min-h-svh flex-col gap-6 p-4 md:p-6">
-        <Button variant="ghost" asChild>
-          <Link to="/salons" search={{ city: undefined }}>
-            ← Wróć do listy
-          </Link>
-        </Button>
-        <Empty>
-          <EmptyHeader>
-            <EmptyTitle>Salon niedostępny</EmptyTitle>
-            <EmptyDescription>
-              Ten salon nie istnieje lub nie jest jeszcze dostępny do
-              rezerwacji. Wróć do listy i wybierz inny salon.
-            </EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Button asChild>
-              <Link to="/salons" search={{ city: undefined }}>
-                Szukaj salonów
-              </Link>
-            </Button>
-          </EmptyContent>
-        </Empty>
-      </div>
+      <PublicLayout>
+        <div className="container mx-auto flex min-h-svh flex-col gap-6 p-4 md:p-6">
+          <Button variant="ghost" asChild>
+            <Link to="/salons" search={{ city: undefined }}>
+              ← Wróć do listy
+            </Link>
+          </Button>
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>Salon niedostępny</EmptyTitle>
+              <EmptyDescription>
+                Ten salon nie istnieje lub nie jest jeszcze dostępny do
+                rezerwacji. Wróć do listy i wybierz inny salon.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button asChild>
+                <Link to="/salons" search={{ city: undefined }}>
+                  Szukaj salonów
+                </Link>
+              </Button>
+            </EmptyContent>
+          </Empty>
+        </div>
+      </PublicLayout>
     );
   }
 
@@ -98,120 +103,123 @@ export function SalonDetailPage() {
     .join(' ');
 
   return (
-    <div className="flex min-h-svh flex-col gap-6 p-4 md:p-6">
-      <Button variant="ghost" size="sm" asChild>
-        <Link to="/salons" search={{ city: undefined }} className="gap-1">
-          <ArrowLeft className="size-4" />
-          Wróć do listy
-        </Link>
-      </Button>
+    <PublicLayout>
+      <div className="container mx-auto flex min-h-svh flex-col gap-6 p-4 md:p-6">
+        <Button variant="ghost" size="sm" asChild>
+          <Link to="/salons" search={{ city: undefined }} className="gap-1">
+            <ArrowLeft className="size-4" />
+            Wróć do listy
+          </Link>
+        </Button>
 
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {salon.name ?? 'Salon'}
-        </h1>
-        {salon.description && (
-          <p className="text-muted-foreground text-sm">{salon.description}</p>
-        )}
-      </header>
+        <header className="space-y-1">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {salon.name ?? 'Salon'}
+          </h1>
+          {salon.description && (
+            <p className="text-muted-foreground text-sm">{salon.description}</p>
+          )}
+        </header>
 
-      <section className="space-y-2" aria-label="Dane kontaktowe">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Kontakt i adres</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2">
-            {salon.phone && (
-              <p className="flex items-center gap-2 text-sm">
-                <Phone className="text-muted-foreground size-4 shrink-0" />
-                <a href={`tel:${salon.phone}`} className="underline">
-                  {salon.phone}
-                </a>
-              </p>
-            )}
-            {address && (
-              <p className="flex items-start gap-2 text-sm">
-                <MapPin className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                <span>{address}</span>
-              </p>
-            )}
-          </CardContent>
-        </Card>
-      </section>
-
-      {hoursLoading ? (
-        <Skeleton className="h-48 w-full" />
-      ) : workingHours && workingHours.length > 0 ? (
-        <section aria-label="Godziny pracy">
+        <section className="space-y-2" aria-label="Dane kontaktowe">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Clock className="size-4" />
-                Godziny pracy
-              </CardTitle>
+              <CardTitle className="text-base">Kontakt i adres</CardTitle>
             </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                {DAY_NAMES.map((label, dayOfWeek) => {
-                  const wh = workingHours.find(
-                    (h: Tables<'working_hours'>) => h.day_of_week === dayOfWeek,
-                  );
-                  const isToday = dayOfWeek === today;
-                  return (
-                    <li
-                      key={dayOfWeek}
-                      className={`flex justify-between text-sm ${isToday ? 'font-medium' : ''}`}
-                    >
-                      <span>
-                        {label}
-                        {isToday && (
-                          <span className="text-muted-foreground ml-1">
-                            (dziś)
-                          </span>
-                        )}
-                      </span>
-                      <span>
-                        {wh
-                          ? `${formatTime(wh.open_time)} – ${formatTime(wh.close_time)}`
-                          : 'Zamknięte'}
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
+            <CardContent className="flex flex-col gap-2">
+              {salon.phone && (
+                <p className="flex items-center gap-2 text-sm">
+                  <Phone className="text-muted-foreground size-4 shrink-0" />
+                  <a href={`tel:${salon.phone}`} className="underline">
+                    {salon.phone}
+                  </a>
+                </p>
+              )}
+              {address && (
+                <p className="flex items-start gap-2 text-sm">
+                  <MapPin className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                  <span>{address}</span>
+                </p>
+              )}
             </CardContent>
           </Card>
         </section>
-      ) : null}
 
-      <section aria-label="Usługi">
-        <h2 className="text-lg font-semibold">Usługi</h2>
-        {servicesLoading ? (
-          <div className="space-y-2">
-            <Skeleton className="h-16 w-full" />
-            <Skeleton className="h-16 w-full" />
-          </div>
-        ) : services && services.length > 0 ? (
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {services.map((service: Tables<'services'>) => (
-              <ServiceCard
-                key={service.id}
-                salonId={salon.id}
-                service={service}
-              />
-            ))}
-          </ul>
-        ) : (
-          <Card>
-            <CardContent className="py-6">
-              <p className="text-muted-foreground text-sm">
-                Brak dostępnych usług.
-              </p>
-            </CardContent>
-          </Card>
-        )}
-      </section>
-    </div>
+        {hoursLoading ? (
+          <Skeleton className="h-48 w-full" />
+        ) : workingHours && workingHours.length > 0 ? (
+          <section aria-label="Godziny pracy">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Clock className="size-4" />
+                  Godziny pracy
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {DAY_NAMES.map((label, dayOfWeek) => {
+                    const wh = workingHours.find(
+                      (h: Tables<'working_hours'>) =>
+                        h.day_of_week === dayOfWeek,
+                    );
+                    const isToday = dayOfWeek === today;
+                    return (
+                      <li
+                        key={dayOfWeek}
+                        className={`flex justify-between text-sm ${isToday ? 'font-medium' : ''}`}
+                      >
+                        <span>
+                          {label}
+                          {isToday && (
+                            <span className="text-muted-foreground ml-1">
+                              (dziś)
+                            </span>
+                          )}
+                        </span>
+                        <span>
+                          {wh
+                            ? `${formatTime(wh.open_time)} – ${formatTime(wh.close_time)}`
+                            : 'Zamknięte'}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </CardContent>
+            </Card>
+          </section>
+        ) : null}
+
+        <section aria-label="Usługi">
+          <h2 className="text-lg font-semibold">Usługi</h2>
+          {servicesLoading ? (
+            <div className="space-y-2">
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-16 w-full" />
+            </div>
+          ) : services && services.length > 0 ? (
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {services.map((service: Tables<'services'>) => (
+                <ServiceCard
+                  key={service.id}
+                  salonId={salon.id}
+                  service={service}
+                />
+              ))}
+            </ul>
+          ) : (
+            <Card>
+              <CardContent className="py-6">
+                <p className="text-muted-foreground text-sm">
+                  Brak dostępnych usług.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </section>
+      </div>
+    </PublicLayout>
   );
 }
 

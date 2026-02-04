@@ -1,5 +1,6 @@
 import { createRouter } from '@tanstack/react-router';
 import { rootRoute } from './root';
+import { landingRoute } from '@/features/landing';
 import { signInRoute, signUpRoute } from '@/features/auth/route';
 import { appRoute } from '@/features/dashboard/route';
 import { onboardingRoute } from '@/features/onboarding/route';
@@ -11,6 +12,7 @@ import {
 } from '@/features/client-salons/route';
 
 const routeTree = rootRoute.addChildren([
+  landingRoute,
   signInRoute,
   signUpRoute,
   appRoute,

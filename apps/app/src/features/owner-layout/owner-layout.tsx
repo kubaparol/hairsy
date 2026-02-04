@@ -1,4 +1,4 @@
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { LogOut } from 'lucide-react';
 import { useSignOut } from '@/entities/auth';
 import {
@@ -34,9 +34,12 @@ export function OwnerLayout({ children }: OwnerLayoutProps) {
     <SidebarProvider>
       <Sidebar collapsible="icon">
         <SidebarHeader className="border-b border-sidebar-border py-4 px-2">
-          <span className="text-sidebar-foreground truncate text-sm font-semibold group-data-[collapsible=icon]:hidden">
-            Panel właściciela
-          </span>
+          <Link
+            to="/"
+            className="text-sidebar-foreground truncate text-lg font-bold hover:opacity-80 transition-opacity group-data-[collapsible=icon]:hidden"
+          >
+            <span className="text-primary">Hairsy</span>
+          </Link>
         </SidebarHeader>
         <OwnerSidebar />
         <SidebarFooter className="border-t border-sidebar-border p-2">
