@@ -1,0 +1,36 @@
+{
+  "name": "hairsy-app-v2",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint --max-warnings 0",
+    "check-types": "tsc --noEmit",
+    "db:migrate": "supabase migration up",
+    "db:reset": "supabase db reset",
+    "db:typegen": "supabase gen types typescript --local > src/kernel/db/database.types.ts"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "^1.153.1",
+    "@tanstack/react-router-devtools": "^1.153.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/tailwind-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react-swc": "^4.2.2",
+    "eslint": "^9.39.1",
+    "tailwindcss": "^4.1.18",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4"
+  }
+}
