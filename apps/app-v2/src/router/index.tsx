@@ -4,6 +4,9 @@ import { createRouter } from '@tanstack/react-router';
 import { welcomeRoute } from '../features/welcome/route';
 import { businessDashboardRoute } from '../features/business/dashboard/route';
 import { businessRegisterRoute } from '../features/business/register/route';
+import { loginRoute } from '../features/auth/login/route';
+import { clientDashboardRoute } from '../features/client/dashboard/route';
+import { clientRegisterRoute } from '../features/client/register/route';
 
 export const rootRoute = createRootRoute({
   component: () => (
@@ -18,6 +21,9 @@ const routeTree = rootRoute.addChildren([
   welcomeRoute,
   businessDashboardRoute,
   businessRegisterRoute,
+  loginRoute,
+  clientDashboardRoute,
+  clientRegisterRoute,
 ]);
 
 export const router = createRouter({

@@ -1,10 +1,10 @@
 import { Link } from '@tanstack/react-router';
-import { Calendar, Scissors, BarChart3 } from 'lucide-react';
+import { Calendar, Bell, History } from 'lucide-react';
 
-import { BusinessRegisterForm } from './components/business-register-form';
-import { useBusinessRegister } from './hooks/use-business-register';
+import { ClientRegisterForm } from './components/client-register-form';
+import { useClientRegister } from './hooks/use-client-register';
 
-import type { RegisterFormValues } from './components/business-register-form';
+import type { ClientRegisterFormValues } from './components/client-register-form';
 import type { LucideIcon } from 'lucide-react';
 
 /* Static data hoisted outside the component to avoid re-creation on render */
@@ -15,27 +15,27 @@ const FEATURES: ReadonlyArray<{
 }> = [
   {
     icon: Calendar,
-    title: 'Rezerwacje 24/7',
-    description: 'Klienci umawiają się online, nawet gdy Ty śpisz',
+    title: 'Szybka rezerwacja',
+    description: 'Wybierz salon, usługę i termin — w trzy kliknięcia',
   },
   {
-    icon: Scissors,
-    title: 'Profesjonalny profil',
-    description: 'Twój salon widoczny dla nowych klientów',
+    icon: Bell,
+    title: 'Potwierdzenia',
+    description: 'Otrzymuj e-mail z potwierdzeniem każdej rezerwacji',
   },
   {
-    icon: BarChart3,
-    title: 'Pełna kontrola',
-    description: 'Kalendarz, pracownicy i usługi w jednym miejscu',
+    icon: History,
+    title: 'Historia wizyt',
+    description: 'Wszystkie umówione wizyty w jednym miejscu',
   },
 ];
 
-export const BusinessRegisterView = () => {
-  const { register, error } = useBusinessRegister();
+export const ClientRegisterView = () => {
+  const { register, error } = useClientRegister();
 
-  const handleSubmit = async (values: RegisterFormValues) => {
+  const handleSubmit = async (values: ClientRegisterFormValues) => {
     await register({
-      salonName: values.salonName.trim(),
+      firstName: values.firstName.trim(),
       email: values.email.trim().toLowerCase(),
       password: values.password,
       gdprAccepted: values.gdprAccepted,
@@ -44,7 +44,7 @@ export const BusinessRegisterView = () => {
 
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Left Panel — Branding & Value Proposition (hidden on mobile) */}
+      {/* Left Panel — B2C Branding (hidden on mobile) */}
       <div className="hidden lg:flex lg:w-5/12 flex-col justify-between border-r border-border bg-linear-to-b from-accent/8 to-surface p-12">
         <div>
           <Link to="/" className="text-2xl font-semibold text-foreground">
@@ -55,12 +55,12 @@ export const BusinessRegisterView = () => {
         <div className="space-y-8">
           <div className="space-y-3">
             <h2 className="text-3xl font-semibold text-foreground">
-              Koniec z chaosem
-              <br />w kalendarzu
+              Zarezerwuj wizytę
+              <br />w ulubionym salonie
             </h2>
             <p className="text-lg text-muted">
-              Rezerwacje online, zarządzanie grafikiem i profesjonalny profil
-              salonu — wszystko w jednym miejscu.
+              Znajdź salon, wybierz usługę i termin — umów się online w kilka
+              minut.
             </p>
           </div>
 
@@ -99,7 +99,7 @@ export const BusinessRegisterView = () => {
               Utwórz konto
             </h1>
             <p className="mt-2 text-sm text-muted">
-              Skonfiguruj salon w 5 minut — bez zobowiązań
+              Zarejestruj się, aby umawiać wizyty w salonach
             </p>
           </header>
 
@@ -112,7 +112,7 @@ export const BusinessRegisterView = () => {
             </div>
           )}
 
-          <BusinessRegisterForm onSubmit={handleSubmit} />
+          <ClientRegisterForm onSubmit={handleSubmit} />
 
           {/* Footer links */}
           <footer>
