@@ -11,13 +11,20 @@
     "check-types": "tsc --noEmit",
     "db:migrate": "supabase migration up",
     "db:reset": "supabase db reset",
-    "db:typegen": "supabase gen types typescript --local > src/kernel/db/database.types.ts"
+    "db:typegen": "supabase gen types typescript --local > src/lib/database.types.ts"
   },
   "dependencies": {
+    "@heroui/react": "3.0.0-beta.5",
+    "@heroui/styles": "3.0.0-beta.5",
+    "@hookform/resolvers": "^5.2.2",
+    "@supabase/supabase-js": "^2.91.0",
     "@tanstack/react-router": "^1.153.1",
     "@tanstack/react-router-devtools": "^1.153.1",
+    "lucide-react": "^0.562.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-hook-form": "^7.71.1",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
