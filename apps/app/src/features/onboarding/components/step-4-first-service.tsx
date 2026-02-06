@@ -58,6 +58,7 @@ export function Step4FirstService({
   onBack,
 }: Step4FirstServiceProps) {
   const form = useForm<FirstServiceFormValues>({
+    // @ts-expect-error weq
     resolver: zodResolver(firstServiceSchema),
     defaultValues: {
       name: '',

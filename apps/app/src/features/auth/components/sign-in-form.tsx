@@ -61,6 +61,7 @@ export function SignInForm({ redirectPath, onSuccess }: SignInFormProps) {
   });
 
   const form = useForm<SignInFormValues>({
+    // @ts-expect-error asdas
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: '',

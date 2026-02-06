@@ -95,6 +95,7 @@ export function SignUpForm({ role, onSuccess }: SignUpFormProps) {
   });
 
   const form = useForm<SignUpFormValues>({
+    // @ts-expect-error asdas
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       email: '',

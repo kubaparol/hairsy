@@ -4,7 +4,7 @@
 
 ### 1.1 Cel Produktu
 
-Stworzenie profesjonalnej platformy SaaS dla branży beauty, która łączy w sobie prostotę obsługi ("zero training required") z funkcjonalnościami klasy Enterprise. System ma eliminować "amatorskie" wrażenie starszych rozwiązań poprzez nowoczesny design (NextUI) i przemyślane User Experience.
+Stworzenie profesjonalnej platformy SaaS dla branży beauty, która łączy w sobie prostotę obsługi ("zero training required") z funkcjonalnościami klasy Enterprise. System ma eliminować "amatorskie" wrażenie starszych rozwiązań poprzez nowoczesny design (HeroUI - previously NextUI) i przemyślane User Experience.
 
 ### 1.2 Zakres MVP (Happy Path)
 
@@ -19,7 +19,7 @@ Stworzenie profesjonalnej platformy SaaS dla branży beauty, która łączy w so
 ## 2. Architektura i Założenia Techniczne
 
 - **Frontend**: React + Vite + TypeScript.
-- **UI Library**: **NextUI** (React Aria + Tailwind) - styl "Premium Glass".
+- **UI Library**: **HeroUI (Previously NextUI)** (React Aria + Tailwind) - styl "Premium Modern".
 - **Routing**: **TanStack Router** (Code-based routing).
   - `/business/*` - strefa dla właścicieli.
   - `/client/*` - strefa dla zalogowanych klientów.
@@ -34,7 +34,7 @@ Stworzenie profesjonalnej platformy SaaS dla branży beauty, która łączy w so
 #### 3.1.1 Rejestracja Biznesowa
 
 - **Ścieżka**: `/business/register`.
-- **Dane**: Email, Hasło, Nazwa Salonu.
+- **Dane**: Email, Hasło, Nazwa Salonu, zgody GDPR.
 - **Brak NIP i innych danych firmy**: Nie wymagamy danych rejestrowych na tym etapie.
 - **Akcja**: Po rejestracji przekierowanie do Dashboardu Biznesowego (rola `OWNER`).
 

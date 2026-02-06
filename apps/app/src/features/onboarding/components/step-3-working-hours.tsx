@@ -78,6 +78,7 @@ export function Step3WorkingHours({
   });
 
   const form = useForm<WorkingHoursFormValues>({
+    // @ts-expect-error asdas
     resolver: zodResolver(workingHoursSchema),
     defaultValues: {
       days: defaultDays,

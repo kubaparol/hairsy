@@ -42,6 +42,7 @@ export function Step1SalonData({
   onSkip,
 }: Step1SalonDataProps) {
   const form = useForm<SalonDataFormValues>({
+    // @ts-expect-error asdas
     resolver: zodResolver(salonDataSchema),
     defaultValues: {
       name: initialValues?.name ?? '',

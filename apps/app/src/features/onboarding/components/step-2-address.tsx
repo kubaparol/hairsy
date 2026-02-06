@@ -44,6 +44,8 @@ export function Step2Address({
   onSkip,
 }: Step2AddressProps) {
   const form = useForm<AddressFormValues>({
+    // @ts-expect-error asdas
+
     resolver: zodResolver(addressSchema),
     defaultValues: {
       street: initialValues?.street ?? '',

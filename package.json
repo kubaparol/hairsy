@@ -16,8 +16,7 @@
   },
   "lint-staged": {
     "**/*.{ts,tsx,md,css,json,yaml}": [
-      "pnpm format",
-      "git add ."
+      "pnpm format"
     ]
   },
   "commitlint": {

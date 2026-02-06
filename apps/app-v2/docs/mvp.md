@@ -49,7 +49,7 @@ Skupiamy się na "Happy Path", który musi być **bezbłędny w działaniu i zac
 
 - **Powiadomienia Email**: Potwierdzenia rezerwacji dla Klienta i Właściciela.
 - **Brak Double-Booking**: Solidna walidacja dostępności po stronie backendu (dane w czasie rzeczywistym).
-- **Estetyka**: NextUI (Glassmorphism), unikalny font, dopracowane mikro-interakcje.
+- **Estetyka**: HeroUI (Previously NextUI) (Modern), unikalny font, dopracowane mikro-interakcje.
 
 ## Co NIE wchodzi w zakres MVP (Out of Scope)
 

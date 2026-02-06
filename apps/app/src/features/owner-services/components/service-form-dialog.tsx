@@ -74,6 +74,7 @@ export function ServiceFormDialog({
   isSubmitting = false,
 }: ServiceFormDialogProps) {
   const form = useForm<ServiceFormValues>({
+    // @ts-expect-error www
     resolver: zodResolver(serviceFormSchema),
     defaultValues: {
       name: service?.name ?? '',

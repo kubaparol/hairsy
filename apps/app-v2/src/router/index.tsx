@@ -2,6 +2,8 @@ import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { createRouter } from '@tanstack/react-router';
 import { welcomeRoute } from '../features/welcome/route';
+import { businessDashboardRoute } from '../features/business/dashboard/route';
+import { businessRegisterRoute } from '../features/business/register/route';
 
 export const rootRoute = createRootRoute({
   component: () => (
@@ -12,7 +14,11 @@ export const rootRoute = createRootRoute({
   ),
 });
 
-const routeTree = rootRoute.addChildren([welcomeRoute]);
+const routeTree = rootRoute.addChildren([
+  welcomeRoute,
+  businessDashboardRoute,
+  businessRegisterRoute,
+]);
 
 export const router = createRouter({
   routeTree,
