@@ -1,14 +1,14 @@
 import { useState } from 'react';
 
-export interface ClientRegisterPayload {
+export interface SignUpAsClientPayload {
   firstName: string;
   email: string;
   password: string;
   gdprAccepted: boolean;
 }
 
-export interface UseClientRegisterReturn {
-  register: (data: ClientRegisterPayload) => Promise<void>;
+export interface UseSignUpAsClientReturn {
+  signUp: (data: SignUpAsClientPayload) => Promise<void>;
   error: string | null;
 }
 
@@ -21,10 +21,10 @@ export interface UseClientRegisterReturn {
  * 2. Trigger handle_new_user creates profile with role USER
  * 3. Update profile with firstName (or separate table if needed)
  */
-export function useClientRegister(): UseClientRegisterReturn {
+export function useSignUpAsClient(): UseSignUpAsClientReturn {
   const [error, setError] = useState<string | null>(null);
 
-  const register = async (data: ClientRegisterPayload) => {
+  const signUp = async (data: SignUpAsClientPayload) => {
     setError(null);
 
     try {
@@ -35,7 +35,7 @@ export function useClientRegister(): UseClientRegisterReturn {
       // Mock — simulate network delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      console.log('[useClientRegister] registered:', {
+      console.log('[useSignUpAsClient] registered:', {
         firstName: data.firstName,
         email: data.email,
         gdprAccepted: data.gdprAccepted,
@@ -48,5 +48,5 @@ export function useClientRegister(): UseClientRegisterReturn {
     }
   };
 
-  return { register, error };
+  return { signUp, error };
 }

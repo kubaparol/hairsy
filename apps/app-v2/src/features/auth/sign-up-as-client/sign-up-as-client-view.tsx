@@ -1,10 +1,10 @@
 import { Link } from '@tanstack/react-router';
 import { Calendar, Bell, History } from 'lucide-react';
 
-import { ClientRegisterForm } from './components/client-register-form';
-import { useClientRegister } from './hooks/use-client-register';
+import { SignUpAsClientForm } from './components/sign-up-as-client-form';
+import { useSignUpAsClient } from './hooks/use-sign-up-as-client';
 
-import type { ClientRegisterFormValues } from './components/client-register-form';
+import type { SignUpAsClientFormValues } from './components/sign-up-as-client-form';
 import type { LucideIcon } from 'lucide-react';
 
 /* Static data hoisted outside the component to avoid re-creation on render */
@@ -30,11 +30,11 @@ const FEATURES: ReadonlyArray<{
   },
 ];
 
-export const ClientRegisterView = () => {
-  const { register, error } = useClientRegister();
+export const SignUpAsClientView = () => {
+  const { signUp, error } = useSignUpAsClient();
 
-  const handleSubmit = async (values: ClientRegisterFormValues) => {
-    await register({
+  const handleSubmit = async (values: SignUpAsClientFormValues) => {
+    await signUp({
       firstName: values.firstName.trim(),
       email: values.email.trim().toLowerCase(),
       password: values.password,
@@ -112,14 +112,14 @@ export const ClientRegisterView = () => {
             </div>
           )}
 
-          <ClientRegisterForm onSubmit={handleSubmit} />
+          <SignUpAsClientForm onSubmit={handleSubmit} />
 
           {/* Footer links */}
           <footer>
             <p className="text-sm text-muted">
               Masz już konto?{' '}
               <Link
-                to="/login"
+                to="/auth/sign-in"
                 className="font-medium text-accent underline-offset-4 hover:underline"
               >
                 Zaloguj się

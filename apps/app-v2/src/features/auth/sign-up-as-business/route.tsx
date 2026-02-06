@@ -1,13 +1,13 @@
 import { createRoute } from '@tanstack/react-router';
 import { rootRoute } from '../../../router';
-import { LoginView } from './login-view';
+import { SignUpAsBusinessView } from './sign-up-as-business-view';
 
-export const loginRoute = createRoute({
+export const signUpAsBusinessRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/login',
+  path: '/auth/sign-up-as-business',
   component: () => (
     <div>
-      <LoginView />
+      <SignUpAsBusinessView />
     </div>
   ),
 });

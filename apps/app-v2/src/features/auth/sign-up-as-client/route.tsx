@@ -1,13 +1,13 @@
 import { createRoute } from '@tanstack/react-router';
 import { rootRoute } from '../../../router';
-import { ClientRegisterView } from './client-register-view';
+import { SignUpAsClientView } from './sign-up-as-client-view';
 
-export const clientRegisterRoute = createRoute({
+export const signUpAsClientRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/register',
+  path: '/auth/sign-up-as-client',
   component: () => (
     <div>
-      <ClientRegisterView />
+      <SignUpAsClientView />
     </div>
   ),
 });

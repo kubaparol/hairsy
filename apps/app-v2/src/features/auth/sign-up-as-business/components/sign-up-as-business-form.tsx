@@ -16,7 +16,7 @@ import { z } from 'zod';
 const MIN_PASSWORD_LENGTH = 8;
 const MAX_SALON_NAME_LENGTH = 100;
 
-const registerFormSchema = z.object({
+const signUpAsBusinessFormSchema = z.object({
   salonName: z
     .string()
     .min(1, 'Nazwa salonu jest wymagana')
@@ -42,21 +42,23 @@ const registerFormSchema = z.object({
     .refine((val) => val === true, 'Musisz zaakceptować regulamin'),
 });
 
-export type RegisterFormValues = z.infer<typeof registerFormSchema>;
+export type SignUpAsBusinessFormValues = z.infer<
+  typeof signUpAsBusinessFormSchema
+>;
 
-interface BusinessRegisterFormProps {
-  onSubmit: (data: RegisterFormValues) => Promise<void>;
+interface SignUpAsBusinessFormProps {
+  onSubmit: (data: SignUpAsBusinessFormValues) => Promise<void>;
 }
 
-export const BusinessRegisterForm = ({
+export const SignUpAsBusinessForm = ({
   onSubmit,
-}: BusinessRegisterFormProps) => {
+}: SignUpAsBusinessFormProps) => {
   const {
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerFormSchema),
+  } = useForm<SignUpAsBusinessFormValues>({
+    resolver: zodResolver(signUpAsBusinessFormSchema),
     defaultValues: {
       salonName: '',
       email: '',

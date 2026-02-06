@@ -10,7 +10,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-const loginFormSchema = z.object({
+const signInFormSchema = z.object({
   email: z
     .string()
     .min(1, 'E-mail jest wymagany')
@@ -18,20 +18,20 @@ const loginFormSchema = z.object({
   password: z.string().min(1, 'Hasło jest wymagane'),
 });
 
-export type LoginFormValues = z.infer<typeof loginFormSchema>;
+export type SignInFormValues = z.infer<typeof signInFormSchema>;
 
-interface LoginFormProps {
-  onSubmit: (data: LoginFormValues) => Promise<void>;
+interface SignInFormProps {
+  onSubmit: (data: SignInFormValues) => Promise<void>;
   isPending?: boolean;
 }
 
-export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
+export const SignInForm = ({ onSubmit, isPending }: SignInFormProps) => {
   const {
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginFormSchema),
+  } = useForm<SignInFormValues>({
+    resolver: zodResolver(signInFormSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -64,20 +64,20 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
                 isInvalid={invalid}
                 validationBehavior="aria"
               >
-                <Label htmlFor="login-email" isRequired>
+                <Label htmlFor="sign-in-email" isRequired>
                   Adres e-mail
                 </Label>
                 <Input
-                  id="login-email"
+                  id="sign-in-email"
                   type="email"
                   placeholder="jan@example.com"
                   autoComplete="email"
                   inputMode="email"
-                  aria-describedby="login-email-error"
+                  aria-describedby="sign-in-email-error"
                   {...field}
                 />
                 {error && (
-                  <FieldError id="login-email-error">
+                  <FieldError id="sign-in-email-error">
                     {error.message}
                   </FieldError>
                 )}
@@ -99,19 +99,19 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
                 isInvalid={invalid}
                 validationBehavior="aria"
               >
-                <Label htmlFor="login-password" isRequired>
+                <Label htmlFor="sign-in-password" isRequired>
                   Hasło
                 </Label>
                 <Input
-                  id="login-password"
+                  id="sign-in-password"
                   type="password"
                   placeholder="••••••••"
                   autoComplete="current-password"
-                  aria-describedby="login-password-error"
+                  aria-describedby="sign-in-password-error"
                   {...field}
                 />
                 {error && (
-                  <FieldError id="login-password-error">
+                  <FieldError id="sign-in-password-error">
                     {error.message}
                   </FieldError>
                 )}

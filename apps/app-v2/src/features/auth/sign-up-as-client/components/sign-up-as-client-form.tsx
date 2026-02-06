@@ -16,7 +16,7 @@ import { z } from 'zod';
 const MIN_PASSWORD_LENGTH = 8;
 const MAX_FIRST_NAME_LENGTH = 50;
 
-const clientRegisterFormSchema = z.object({
+const signUpAsClientFormSchema = z.object({
   firstName: z
     .string()
     .min(1, 'Imię jest wymagane')
@@ -42,19 +42,19 @@ const clientRegisterFormSchema = z.object({
     .refine((val) => val === true, 'Musisz zaakceptować regulamin'),
 });
 
-export type ClientRegisterFormValues = z.infer<typeof clientRegisterFormSchema>;
+export type SignUpAsClientFormValues = z.infer<typeof signUpAsClientFormSchema>;
 
-interface ClientRegisterFormProps {
-  onSubmit: (data: ClientRegisterFormValues) => Promise<void>;
+interface SignUpAsClientFormProps {
+  onSubmit: (data: SignUpAsClientFormValues) => Promise<void>;
 }
 
-export const ClientRegisterForm = ({ onSubmit }: ClientRegisterFormProps) => {
+export const SignUpAsClientForm = ({ onSubmit }: SignUpAsClientFormProps) => {
   const {
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<ClientRegisterFormValues>({
-    resolver: zodResolver(clientRegisterFormSchema),
+  } = useForm<SignUpAsClientFormValues>({
+    resolver: zodResolver(signUpAsClientFormSchema),
     defaultValues: {
       firstName: '',
       email: '',

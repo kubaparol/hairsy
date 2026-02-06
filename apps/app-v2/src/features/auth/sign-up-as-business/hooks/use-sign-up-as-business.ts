@@ -1,14 +1,14 @@
 import { useState } from 'react';
 
-export interface BusinessRegisterPayload {
+export interface SignUpAsBusinessPayload {
   salonName: string;
   email: string;
   password: string;
   gdprAccepted: boolean;
 }
 
-export interface UseBusinessRegisterReturn {
-  register: (data: BusinessRegisterPayload) => Promise<void>;
+export interface UseSignUpAsBusinessReturn {
+  signUp: (data: SignUpAsBusinessPayload) => Promise<void>;
   error: string | null;
 }
 
@@ -18,10 +18,10 @@ export interface UseBusinessRegisterReturn {
  * Currently uses a mock implementation.
  * TODO: Replace with Supabase Auth + DB calls.
  */
-export function useBusinessRegister(): UseBusinessRegisterReturn {
+export function useSignUpAsBusiness(): UseSignUpAsBusinessReturn {
   const [error, setError] = useState<string | null>(null);
 
-  const register = async (data: BusinessRegisterPayload) => {
+  const signUp = async (data: SignUpAsBusinessPayload) => {
     setError(null);
 
     try {
@@ -33,7 +33,7 @@ export function useBusinessRegister(): UseBusinessRegisterReturn {
       // Mock — simulate network delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      console.log('[useBusinessRegister] registered:', {
+      console.log('[useSignUpAsBusiness] registered:', {
         salonName: data.salonName,
         email: data.email,
         gdprAccepted: data.gdprAccepted,
@@ -46,5 +46,5 @@ export function useBusinessRegister(): UseBusinessRegisterReturn {
     }
   };
 
-  return { register, error };
+  return { signUp, error };
 }

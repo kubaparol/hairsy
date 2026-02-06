@@ -3,10 +3,10 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { createRouter } from '@tanstack/react-router';
 import { welcomeRoute } from '../features/welcome/route';
 import { businessDashboardRoute } from '../features/business/dashboard/route';
-import { businessRegisterRoute } from '../features/business/register/route';
-import { loginRoute } from '../features/auth/login/route';
+import { signUpAsBusinessRoute } from '../features/auth/sign-up-as-business/route';
+import { signInRoute } from '../features/auth/sign-in/route';
+import { signUpAsClientRoute } from '../features/auth/sign-up-as-client/route';
 import { clientDashboardRoute } from '../features/client/dashboard/route';
-import { clientRegisterRoute } from '../features/client/register/route';
 
 export const rootRoute = createRootRoute({
   component: () => (
@@ -19,11 +19,11 @@ export const rootRoute = createRootRoute({
 
 const routeTree = rootRoute.addChildren([
   welcomeRoute,
+  signInRoute,
+  signUpAsBusinessRoute,
+  signUpAsClientRoute,
   businessDashboardRoute,
-  businessRegisterRoute,
-  loginRoute,
   clientDashboardRoute,
-  clientRegisterRoute,
 ]);
 
 export const router = createRouter({

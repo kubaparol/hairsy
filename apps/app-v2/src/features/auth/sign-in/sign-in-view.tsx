@@ -1,10 +1,10 @@
 import { Link } from '@tanstack/react-router';
-import { Calendar, Scissors, BarChart3 } from 'lucide-react';
+import { Calendar, Store, User } from 'lucide-react';
 
-import { BusinessRegisterForm } from './components/business-register-form';
-import { useBusinessRegister } from './hooks/use-business-register';
+import { SignInForm } from './components/sign-in-form';
+import { useSignIn } from './hooks/use-sign-in';
 
-import type { RegisterFormValues } from './components/business-register-form';
+import type { SignInFormValues } from './components/sign-in-form';
 import type { LucideIcon } from 'lucide-react';
 
 /* Static data hoisted outside the component to avoid re-creation on render */
@@ -15,36 +15,34 @@ const FEATURES: ReadonlyArray<{
 }> = [
   {
     icon: Calendar,
-    title: 'Rezerwacje 24/7',
-    description: 'Klienci umawiają się online, nawet gdy Ty śpisz',
+    title: 'Rezerwacje online',
+    description: 'Umów wizytę w ulubionym salonie w kilka minut',
   },
   {
-    icon: Scissors,
-    title: 'Profesjonalny profil',
-    description: 'Twój salon widoczny dla nowych klientów',
+    icon: Store,
+    title: 'Dla salonów',
+    description: 'Zarządzaj grafikiem i rezerwacjami w jednym miejscu',
   },
   {
-    icon: BarChart3,
-    title: 'Pełna kontrola',
-    description: 'Kalendarz, pracownicy i usługi w jednym miejscu',
+    icon: User,
+    title: 'Jedno konto',
+    description: 'Zaloguj się jako klient lub właściciel salonu',
   },
 ];
 
-export const BusinessRegisterView = () => {
-  const { register, error } = useBusinessRegister();
+export const SignInView = () => {
+  const { signIn, isLoading, error } = useSignIn();
 
-  const handleSubmit = async (values: RegisterFormValues) => {
-    await register({
-      salonName: values.salonName.trim(),
+  const handleSubmit = async (values: SignInFormValues) => {
+    await signIn({
       email: values.email.trim().toLowerCase(),
       password: values.password,
-      gdprAccepted: values.gdprAccepted,
     });
   };
 
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Left Panel — Branding & Value Proposition (hidden on mobile) */}
+      {/* Left Panel — Branding (hidden on mobile) */}
       <div className="hidden lg:flex lg:w-5/12 flex-col justify-between border-r border-border bg-linear-to-b from-accent/8 to-surface p-12">
         <div>
           <Link to="/" className="text-2xl font-semibold text-foreground">
@@ -55,12 +53,13 @@ export const BusinessRegisterView = () => {
         <div className="space-y-8">
           <div className="space-y-3">
             <h2 className="text-3xl font-semibold text-foreground">
-              Koniec z chaosem
-              <br />w kalendarzu
+              Zarezerwuj wizytę
+              <br />
+              lub zarządzaj salonem
             </h2>
             <p className="text-lg text-muted">
-              Rezerwacje online, zarządzanie grafikiem i profesjonalny profil
-              salonu — wszystko w jednym miejscu.
+              Jedna platforma dla klientów i salonów — loguj się i wybierz swoją
+              ścieżkę.
             </p>
           </div>
 
@@ -84,7 +83,7 @@ export const BusinessRegisterView = () => {
         </p>
       </div>
 
-      {/* Right Panel — Registration Form */}
+      {/* Right Panel — Sign-in Form */}
       <div className="flex w-full items-center justify-center px-4 py-12 sm:px-6 lg:w-7/12 lg:px-16">
         <div className="w-full max-w-md space-y-6">
           {/* Mobile-only brand header */}
@@ -96,10 +95,10 @@ export const BusinessRegisterView = () => {
 
           <header>
             <h1 className="text-3xl font-semibold text-foreground">
-              Utwórz konto
+              Zaloguj się
             </h1>
             <p className="mt-2 text-sm text-muted">
-              Skonfiguruj salon w 5 minut — bez zobowiązań
+              Wprowadź dane, aby wejść na swoje konto
             </p>
           </header>
 
@@ -112,17 +111,24 @@ export const BusinessRegisterView = () => {
             </div>
           )}
 
-          <BusinessRegisterForm onSubmit={handleSubmit} />
+          <SignInForm onSubmit={handleSubmit} isPending={isLoading} />
 
-          {/* Footer links */}
-          <footer>
-            <p className="text-sm text-muted">
-              Masz już konto?{' '}
+          {/* Footer links — two registration options */}
+          <footer className="space-y-1">
+            <p className="text-sm text-muted">Nie masz konta?</p>
+            <p className="text-sm">
               <Link
-                to="/login"
+                to="/auth/sign-up-as-business"
                 className="font-medium text-accent underline-offset-4 hover:underline"
               >
-                Zaloguj się
+                Załóż salon
+              </Link>
+              <span className="text-muted"> · </span>
+              <Link
+                to="/auth/sign-up-as-client"
+                className="font-medium text-accent underline-offset-4 hover:underline"
+              >
+                Zarejestruj się jako klient
               </Link>
             </p>
           </footer>

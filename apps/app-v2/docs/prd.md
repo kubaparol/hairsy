@@ -33,20 +33,20 @@ Stworzenie profesjonalnej platformy SaaS dla branży beauty, która łączy w so
 
 #### 3.1.1 Rejestracja Biznesowa
 
-- **Ścieżka**: `/business/register`.
+- **Ścieżka**: `/auth/sign-up-as-business`.
 - **Dane**: Email, Hasło, Nazwa Salonu, zgody GDPR.
 - **Brak NIP i innych danych firmy**: Nie wymagamy danych rejestrowych na tym etapie.
 - **Akcja**: Po rejestracji przekierowanie do Dashboardu Biznesowego (rola `OWNER`).
 
 #### 3.1.2 Rejestracja Klienta
 
-- **Ścieżka**: `/register`.
+- **Ścieżka**: `/auth/sign-up-as-client`.
 - **Dane**: Email, Hasło, Imię.
 - **Akcja**: Po rejestracji przekierowanie do Dashboardu Klienta (rola `USER`).
 
 #### 3.1.3 Logowanie
 
-- **Ścieżka**: `/login`.
+- **Ścieżka**: `/auth/sign-in`.
 - **Logika**: Router wykrywa rolę użytkownika po zalogowaniu i przekierowuje:
   - `OWNER` -> `/business`.
   - `USER` -> `/client`.

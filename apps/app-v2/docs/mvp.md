@@ -13,9 +13,9 @@ Skupiamy się na "Happy Path", który musi być **bezbłędny w działaniu i zac
 ### 1. Autentykacja i Role
 
 - **Separacja Ścieżek**:
-  - **Dla Biznesu**: `/business/register` (Email, Hasło, Nazwa Salonu). Jasny komunikat B2B.
-  - **Dla Klienta**: `/register` (Szybka rejestracja dla umawiających się).
-- **Wspólne Logowanie**: `/login` (Router sam przekierowuje do odpowiedniego dashboardu).
+  - **Dla Biznesu**: `/auth/sign-up-as-business` (Email, Hasło, Nazwa Salonu). Jasny komunikat B2B.
+  - **Dla Klienta**: `/auth/sign-up-as-client` (Szybka rejestracja dla umawiających się).
+- **Wspólne Logowanie**: `/auth/sign-in` (Router sam przekierowuje do odpowiedniego dashboardu).
 
 ### 2. Ścieżka Biznesowa (Dashboard Właściciela)
 
