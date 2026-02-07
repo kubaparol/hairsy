@@ -119,6 +119,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useSidebarContext(): SidebarContextValue {
   const ctx = useContext(SidebarContext);
   if (!ctx) {
