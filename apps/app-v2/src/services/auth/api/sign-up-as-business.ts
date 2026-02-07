@@ -5,6 +5,8 @@ export interface SignUpAsBusinessParams {
   salonName: string;
   email: string;
   password: string;
+  gdprAccepted: boolean;
+  termsVersion: string;
 }
 
 export interface SignUpAsBusinessResult {
@@ -18,13 +20,14 @@ export interface SignUpAsBusinessResult {
  * The database trigger `handle_new_user` automatically:
  * - Creates a profile record with role='OWNER'
  * - Creates a salon record with the provided name and status='DRAFT'
+ * - Records GDPR consent in the consents table
  *
  * @throws {AppError} When registration fails
  */
 export async function signUpAsBusiness(
   params: SignUpAsBusinessParams,
 ): Promise<SignUpAsBusinessResult> {
-  const { salonName, email, password } = params;
+  const { salonName, email, password, gdprAccepted, termsVersion } = params;
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -33,6 +36,8 @@ export async function signUpAsBusiness(
       data: {
         role: 'OWNER',
         salon_name: salonName,
+        gdpr_accepted: gdprAccepted,
+        terms_version: termsVersion,
       },
     },
   });

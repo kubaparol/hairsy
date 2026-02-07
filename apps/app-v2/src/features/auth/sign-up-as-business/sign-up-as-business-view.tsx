@@ -38,6 +38,8 @@ export const SignUpAsBusinessView = () => {
       salonName: values.salonName,
       email: values.email,
       password: values.password,
+      gdprAccepted: values.gdprAccepted,
+      termsVersion: '2026-02-01',
     });
   };
 

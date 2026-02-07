@@ -34,6 +34,39 @@ export type Database = {
   };
   public: {
     Tables: {
+      consents: {
+        Row: {
+          consent_type: Database['public']['Enums']['consent_type'];
+          granted_at: string;
+          id: string;
+          ip_address: unknown | null;
+          revoked_at: string | null;
+          terms_version: string;
+          user_agent: string | null;
+          user_id: string;
+        };
+        Insert: {
+          consent_type: Database['public']['Enums']['consent_type'];
+          granted_at?: string;
+          id?: string;
+          ip_address?: unknown | null;
+          revoked_at?: string | null;
+          terms_version: string;
+          user_agent?: string | null;
+          user_id: string;
+        };
+        Update: {
+          consent_type?: Database['public']['Enums']['consent_type'];
+          granted_at?: string;
+          id?: string;
+          ip_address?: unknown | null;
+          revoked_at?: string | null;
+          terms_version?: string;
+          user_agent?: string | null;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           created_at: string;
@@ -98,6 +131,7 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
+      consent_type: 'TERMS_AND_PRIVACY' | 'MARKETING';
       salon_status: 'DRAFT' | 'ACTIVE';
       user_role: 'OWNER' | 'USER';
     };
@@ -218,6 +252,7 @@ export const Constants = {
   },
   public: {
     Enums: {
+      consent_type: ['TERMS_AND_PRIVACY', 'MARKETING'],
       salon_status: ['DRAFT', 'ACTIVE'],
       user_role: ['OWNER', 'USER'],
     },
