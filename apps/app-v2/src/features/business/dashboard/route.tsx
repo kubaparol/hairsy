@@ -1,9 +1,9 @@
 import { createRoute } from '@tanstack/react-router';
-import { rootRoute } from '../../../router';
+import { businessLayoutRoute } from '../layout-route';
 import { BusinessDashboardPlaceholder } from './business-dashboard-view';
 
 export const businessDashboardRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/business',
+  getParentRoute: () => businessLayoutRoute,
+  path: '/',
   component: BusinessDashboardPlaceholder,
 });
