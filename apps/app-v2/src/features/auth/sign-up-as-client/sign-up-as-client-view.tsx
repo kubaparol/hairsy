@@ -2,10 +2,10 @@ import { Link } from '@tanstack/react-router';
 import { Calendar, Bell, History } from 'lucide-react';
 
 import { SignUpAsClientForm } from './components/sign-up-as-client-form';
-import { useSignUpAsClient } from './hooks/use-sign-up-as-client';
 
 import type { SignUpAsClientFormValues } from './components/sign-up-as-client-form';
 import type { LucideIcon } from 'lucide-react';
+import { useSignUpAsClientMutation } from '../../../services/auth/mutations/use-sign-up-as-client-mutation';
 
 /* Static data hoisted outside the component to avoid re-creation on render */
 const FEATURES: ReadonlyArray<{
@@ -31,14 +31,17 @@ const FEATURES: ReadonlyArray<{
 ];
 
 export const SignUpAsClientView = () => {
-  const { signUp, error } = useSignUpAsClient();
+  const { mutate: signUp, isPending } = useSignUpAsClientMutation();
 
-  const handleSubmit = async (values: SignUpAsClientFormValues) => {
-    await signUp({
-      firstName: values.firstName.trim(),
-      email: values.email.trim().toLowerCase(),
+  const handleSubmit = (values: SignUpAsClientFormValues) => {
+    signUp({
+      firstName: values.firstName,
+      lastName: values.lastName,
+      phoneNumber: values.phoneNumber,
+      email: values.email,
       password: values.password,
       gdprAccepted: values.gdprAccepted,
+      termsVersion: '2026-02-01',
     });
   };
 
@@ -103,16 +106,7 @@ export const SignUpAsClientView = () => {
             </p>
           </header>
 
-          {error && (
-            <div
-              className="rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger"
-              role="alert"
-            >
-              {error}
-            </div>
-          )}
-
-          <SignUpAsClientForm onSubmit={handleSubmit} />
+          <SignUpAsClientForm isPending={isPending} onSubmit={handleSubmit} />
 
           {/* Footer links */}
           <footer>

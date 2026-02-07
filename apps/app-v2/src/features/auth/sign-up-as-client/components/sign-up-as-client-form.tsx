@@ -15,6 +15,11 @@ import { z } from 'zod';
 
 const MIN_PASSWORD_LENGTH = 8;
 const MAX_FIRST_NAME_LENGTH = 50;
+const MAX_LAST_NAME_LENGTH = 50;
+
+// Polish phone number regex - accepts formats like:
+// +48 123 456 789, +48123456789, 48 123 456 789, 123 456 789, 123456789
+const POLISH_PHONE_REGEX = /^(\+48)?[\s-]?(\d{3})[\s-]?(\d{3})[\s-]?(\d{3})$/;
 
 const signUpAsClientFormSchema = z.object({
   firstName: z
@@ -26,10 +31,29 @@ const signUpAsClientFormSchema = z.object({
       `Imię może mieć maksymalnie ${MAX_FIRST_NAME_LENGTH} znaków`,
     )
     .refine((val) => val.trim().length > 0, 'Imię jest wymagane'),
+  lastName: z
+    .string()
+    .min(1, 'Nazwisko jest wymagane')
+    .trim()
+    .max(
+      MAX_LAST_NAME_LENGTH,
+      `Nazwisko może mieć maksymalnie ${MAX_LAST_NAME_LENGTH} znaków`,
+    )
+    .refine((val) => val.trim().length > 0, 'Nazwisko jest wymagane'),
+  phoneNumber: z
+    .string()
+    .min(1, 'Numer telefonu jest wymagany')
+    .trim()
+    .regex(
+      POLISH_PHONE_REGEX,
+      'Podaj poprawny polski numer telefonu (np. +48 123 456 789 lub 123456789)',
+    ),
   email: z
     .string()
     .min(1, 'E-mail jest wymagany')
-    .email('Podaj poprawny adres e-mail'),
+    .email('Podaj poprawny adres e-mail')
+    .trim()
+    .toLowerCase(),
   password: z
     .string()
     .min(1, 'Hasło jest wymagane')
@@ -45,18 +69,20 @@ const signUpAsClientFormSchema = z.object({
 export type SignUpAsClientFormValues = z.infer<typeof signUpAsClientFormSchema>;
 
 interface SignUpAsClientFormProps {
-  onSubmit: (data: SignUpAsClientFormValues) => Promise<void>;
+  isPending: boolean;
+  onSubmit: (data: SignUpAsClientFormValues) => void;
 }
 
-export const SignUpAsClientForm = ({ onSubmit }: SignUpAsClientFormProps) => {
-  const {
-    control,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<SignUpAsClientFormValues>({
+export const SignUpAsClientForm = ({
+  isPending,
+  onSubmit,
+}: SignUpAsClientFormProps) => {
+  const { control, handleSubmit } = useForm<SignUpAsClientFormValues>({
     resolver: zodResolver(signUpAsClientFormSchema),
     defaultValues: {
       firstName: '',
+      lastName: '',
+      phoneNumber: '',
       email: '',
       password: '',
       gdprAccepted: false,
@@ -113,6 +139,79 @@ export const SignUpAsClientForm = ({ onSubmit }: SignUpAsClientFormProps) => {
             )}
           />
 
+          {/* Last Name */}
+          <Controller
+            control={control}
+            name="lastName"
+            render={({
+              field: { name, ...field },
+              fieldState: { invalid, error },
+            }) => (
+              <TextField
+                name={name}
+                isRequired
+                isInvalid={invalid}
+                validationBehavior="aria"
+              >
+                <Label htmlFor="client-lastName" isRequired>
+                  Nazwisko
+                </Label>
+                <Input
+                  id="client-lastName"
+                  type="text"
+                  placeholder="np. Kowalska"
+                  autoComplete="family-name"
+                  maxLength={MAX_LAST_NAME_LENGTH}
+                  aria-describedby="client-lastName-error"
+                  {...field}
+                />
+                {error && (
+                  <FieldError id="client-lastName-error">
+                    {error.message}
+                  </FieldError>
+                )}
+              </TextField>
+            )}
+          />
+
+          {/* Phone Number */}
+          <Controller
+            control={control}
+            name="phoneNumber"
+            render={({
+              field: { name, ...field },
+              fieldState: { invalid, error },
+            }) => (
+              <TextField
+                name={name}
+                isRequired
+                isInvalid={invalid}
+                validationBehavior="aria"
+              >
+                <Label htmlFor="client-phoneNumber" isRequired>
+                  Numer telefonu
+                </Label>
+                <Input
+                  id="client-phoneNumber"
+                  type="tel"
+                  placeholder="+48 123 456 789"
+                  autoComplete="tel"
+                  inputMode="tel"
+                  aria-describedby="client-phoneNumber-description client-phoneNumber-error"
+                  {...field}
+                />
+                <Description id="client-phoneNumber-description">
+                  Salon może się z Tobą skontaktować w sprawie rezerwacji
+                </Description>
+                {error && (
+                  <FieldError id="client-phoneNumber-error">
+                    {error.message}
+                  </FieldError>
+                )}
+              </TextField>
+            )}
+          />
+
           {/* Email */}
           <Controller
             control={control}
@@ -140,7 +239,7 @@ export const SignUpAsClientForm = ({ onSubmit }: SignUpAsClientFormProps) => {
                   {...field}
                 />
                 <Description id="client-email-description">
-                  Użyjemy go do logowania i potwierdzeń rezerwacji
+                  Użyjemy go do logowania i potwierdzeń wizyty
                 </Description>
                 {error && (
                   <FieldError id="client-email-error">
@@ -249,9 +348,9 @@ export const SignUpAsClientForm = ({ onSubmit }: SignUpAsClientFormProps) => {
             type="submit"
             variant="primary"
             className="w-full"
-            isPending={isSubmitting}
+            isPending={isPending}
           >
-            {isSubmitting ? 'Rejestruję...' : 'Zarejestruj się'}
+            {isPending ? 'Rejestruję...' : 'Zarejestruj się'}
           </Button>
         </Fieldset.Actions>
       </Fieldset>

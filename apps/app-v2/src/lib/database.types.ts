@@ -34,6 +34,41 @@ export type Database = {
   };
   public: {
     Tables: {
+      client_profiles: {
+        Row: {
+          created_at: string;
+          first_name: string;
+          id: string;
+          last_name: string;
+          phone_number: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          first_name: string;
+          id: string;
+          last_name: string;
+          phone_number?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          first_name?: string;
+          id?: string;
+          last_name?: string;
+          phone_number?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'client_profiles_id_fkey';
+            columns: ['id'];
+            isOneToOne: true;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       consents: {
         Row: {
           consent_type: Database['public']['Enums']['consent_type'];
@@ -66,6 +101,41 @@ export type Database = {
           user_id?: string;
         };
         Relationships: [];
+      };
+      employees: {
+        Row: {
+          created_at: string;
+          display_name: string;
+          id: string;
+          is_active: boolean;
+          salon_id: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          display_name: string;
+          id?: string;
+          is_active?: boolean;
+          salon_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          display_name?: string;
+          id?: string;
+          is_active?: boolean;
+          salon_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'employees_salon_id_fkey';
+            columns: ['salon_id'];
+            isOneToOne: false;
+            referencedRelation: 'salons';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       profiles: {
         Row: {
