@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
+import { toast } from '@heroui/react';
 import { signUpAsClient } from '../api/sign-up-as-client';
 
 import type {
   SignUpAsClientParams,
   SignUpAsClientResult,
 } from '../api/sign-up-as-client';
-import { toast } from '@heroui/react';
 import { isAppError } from '../../errors';
 
 interface UseSignUpAsClientMutationOptions {
@@ -28,7 +28,6 @@ export function useSignUpAsClientMutation(
   return useMutation({
     mutationFn: (params: SignUpAsClientParams) => signUpAsClient(params),
     onSuccess: (data) => {
-      toast('Konto utworzone pomyślnie!', { variant: 'success' });
       options?.onSuccess?.(data);
     },
     onError: (error) => {

@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Calendar, Scissors, BarChart3 } from 'lucide-react';
 
 import { SignUpAsBusinessForm } from './components/sign-up-as-business-form';
+import { SignUpSuccess } from '../components/sign-up-success';
 
 import type { SignUpAsBusinessFormValues } from './components/sign-up-as-business-form';
 import type { LucideIcon } from 'lucide-react';
 import { useSignUpAsBusinessMutation } from '../../../services/auth/mutations/use-sign-up-as-business-mutation';
+import { Separator } from '@heroui/react';
 
 /* Static data hoisted outside the component to avoid re-creation on render */
 const FEATURES: ReadonlyArray<{
@@ -31,7 +34,11 @@ const FEATURES: ReadonlyArray<{
 ];
 
 export const SignUpAsBusinessView = () => {
-  const { mutate: signUp, isPending } = useSignUpAsBusinessMutation();
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const { mutate: signUp, isPending } = useSignUpAsBusinessMutation({
+    onSuccess: () => setIsSuccess(true),
+  });
 
   const handleSubmit = (values: SignUpAsBusinessFormValues) => {
     return signUp({
@@ -87,38 +94,57 @@ export const SignUpAsBusinessView = () => {
 
       {/* Right Panel — Registration Form */}
       <div className="flex w-full items-center justify-center px-4 py-12 sm:px-6 lg:w-7/12 lg:px-16">
-        <div className="w-full max-w-md space-y-6">
-          {/* Mobile-only brand header */}
-          <div className="mb-2 lg:hidden">
-            <Link to="/" className="text-2xl font-semibold text-foreground">
-              Hairsy
-            </Link>
-          </div>
-
-          <header>
-            <h1 className="text-3xl font-semibold text-foreground">
-              Utwórz konto
-            </h1>
-            <p className="mt-2 text-sm text-muted">
-              Skonfiguruj salon w 5 minut — bez zobowiązań
-            </p>
-          </header>
-
-          <SignUpAsBusinessForm isPending={isPending} onSubmit={handleSubmit} />
-
-          {/* Footer links */}
-          <footer>
-            <p className="text-sm text-muted">
-              Masz już konto?{' '}
-              <Link
-                to="/auth/sign-in"
-                className="font-medium text-accent underline-offset-4 hover:underline"
-              >
-                Zaloguj się
+        {isSuccess ? (
+          <SignUpSuccess userType="business" />
+        ) : (
+          <div className="w-full max-w-md space-y-6">
+            {/* Mobile-only brand header */}
+            <div className="mb-2 lg:hidden">
+              <Link to="/" className="text-2xl font-semibold text-foreground">
+                Hairsy
               </Link>
-            </p>
-          </footer>
-        </div>
+            </div>
+
+            <header>
+              <h1 className="text-3xl font-semibold text-foreground">
+                Utwórz konto
+              </h1>
+              <p className="mt-2 text-sm text-muted">
+                Skonfiguruj salon w 5 minut — bez zobowiązań
+              </p>
+            </header>
+
+            <SignUpAsBusinessForm
+              isPending={isPending}
+              onSubmit={handleSubmit}
+            />
+
+            <Separator />
+
+            {/* Footer links */}
+            <footer className="space-y-2">
+              <p className="text-sm text-muted">
+                Masz już konto?{' '}
+                <Link
+                  to="/auth/sign-in"
+                  className="font-medium text-accent underline-offset-4 hover:underline"
+                >
+                  Zaloguj się
+                </Link>
+              </p>
+
+              <p className="text-sm text-muted">
+                Szukasz salonu?{' '}
+                <Link
+                  to="/auth/sign-up-as-client"
+                  className="font-medium text-accent underline-offset-4 hover:underline"
+                >
+                  Zarejestruj się jako klient
+                </Link>
+              </p>
+            </footer>
+          </div>
+        )}
       </div>
     </div>
   );

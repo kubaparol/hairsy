@@ -16,7 +16,6 @@ interface UseSignUpAsBusinessMutationOptions {
  * React Query mutation hook for business registration.
  *
  * Features:
- * - Automatic toast notifications for success and errors
  * - AppError-aware error handling with Polish messages
  * - Type-safe mutation parameters and results
  */
@@ -26,7 +25,6 @@ export function useSignUpAsBusinessMutation(
   return useMutation({
     mutationFn: signUpAsBusiness,
     onSuccess: (data) => {
-      toast('Konto utworzone pomyślnie!', { variant: 'success' });
       options?.onSuccess?.(data);
     },
     onError: (error) => {
