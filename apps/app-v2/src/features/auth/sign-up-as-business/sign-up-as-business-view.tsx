@@ -2,10 +2,10 @@ import { Link } from '@tanstack/react-router';
 import { Calendar, Scissors, BarChart3 } from 'lucide-react';
 
 import { SignUpAsBusinessForm } from './components/sign-up-as-business-form';
-import { useSignUpAsBusiness } from './hooks/use-sign-up-as-business';
 
 import type { SignUpAsBusinessFormValues } from './components/sign-up-as-business-form';
 import type { LucideIcon } from 'lucide-react';
+import { useSignUpAsBusinessMutation } from '../../../services/auth/mutations/use-sign-up-as-business-mutation';
 
 /* Static data hoisted outside the component to avoid re-creation on render */
 const FEATURES: ReadonlyArray<{
@@ -31,14 +31,13 @@ const FEATURES: ReadonlyArray<{
 ];
 
 export const SignUpAsBusinessView = () => {
-  const { signUp, error } = useSignUpAsBusiness();
+  const { mutate: signUp, isPending } = useSignUpAsBusinessMutation();
 
-  const handleSubmit = async (values: SignUpAsBusinessFormValues) => {
-    await signUp({
-      salonName: values.salonName.trim(),
-      email: values.email.trim().toLowerCase(),
+  const handleSubmit = (values: SignUpAsBusinessFormValues) => {
+    return signUp({
+      salonName: values.salonName,
+      email: values.email,
       password: values.password,
-      gdprAccepted: values.gdprAccepted,
     });
   };
 
@@ -103,16 +102,7 @@ export const SignUpAsBusinessView = () => {
             </p>
           </header>
 
-          {error && (
-            <div
-              className="rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger"
-              role="alert"
-            >
-              {error}
-            </div>
-          )}
-
-          <SignUpAsBusinessForm onSubmit={handleSubmit} />
+          <SignUpAsBusinessForm isPending={isPending} onSubmit={handleSubmit} />
 
           {/* Footer links */}
           <footer>

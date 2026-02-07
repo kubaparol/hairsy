@@ -29,7 +29,9 @@ const signUpAsBusinessFormSchema = z.object({
   email: z
     .string()
     .min(1, 'E-mail jest wymagany')
-    .email('Podaj poprawny adres e-mail'),
+    .email('Podaj poprawny adres e-mail')
+    .trim()
+    .toLowerCase(),
   password: z
     .string()
     .min(1, 'Hasło jest wymagane')
@@ -47,17 +49,15 @@ export type SignUpAsBusinessFormValues = z.infer<
 >;
 
 interface SignUpAsBusinessFormProps {
-  onSubmit: (data: SignUpAsBusinessFormValues) => Promise<void>;
+  isPending: boolean;
+  onSubmit: (data: SignUpAsBusinessFormValues) => void;
 }
 
 export const SignUpAsBusinessForm = ({
+  isPending,
   onSubmit,
 }: SignUpAsBusinessFormProps) => {
-  const {
-    control,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<SignUpAsBusinessFormValues>({
+  const { control, handleSubmit } = useForm<SignUpAsBusinessFormValues>({
     resolver: zodResolver(signUpAsBusinessFormSchema),
     defaultValues: {
       salonName: '',
@@ -247,9 +247,9 @@ export const SignUpAsBusinessForm = ({
             type="submit"
             variant="primary"
             className="w-full"
-            isPending={isSubmitting}
+            isPending={isPending}
           >
-            {isSubmitting ? 'Rejestruję...' : 'Załóż konto'}
+            {isPending ? 'Rejestruję...' : 'Załóż konto'}
           </Button>
         </Fieldset.Actions>
       </Fieldset>
