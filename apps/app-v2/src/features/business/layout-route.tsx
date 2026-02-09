@@ -5,7 +5,7 @@ import {
   Settings,
   Users,
 } from 'lucide-react';
-import { createRoute } from '@tanstack/react-router';
+import { createRoute, redirect } from '@tanstack/react-router';
 import { AppLayout } from '../../components/layout/app-layout';
 import { rootRoute } from '../../router';
 import type { SidebarNavGroupConfig } from '../../components/layout/sidebar';
@@ -31,19 +31,46 @@ const businessNavigationGroups: SidebarNavGroupConfig[] = [
   },
 ];
 
-const placeholderUser = {
-  name: 'Mój Salon',
-  email: 'salon@example.com',
-};
-
 export const businessLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/business',
-  component: () => (
-    <AppLayout
-      navigationGroups={businessNavigationGroups}
-      userInfo={placeholderUser}
-      settingsPath="/business/settings"
-    />
-  ),
+  beforeLoad: async ({ context, location }) => {
+    const { auth } = context;
+
+    // Not authenticated → redirect to sign-in with return URL
+    if (!auth.isAuthenticated) {
+      throw redirect({
+        to: '/auth/sign-in',
+        search: {
+          redirect: location.href,
+        },
+      });
+    }
+
+    // Authenticated but not OWNER → redirect to client dashboard
+    if (auth.profile?.role !== 'OWNER') {
+      throw redirect({
+        to: '/client',
+      });
+    }
+
+    // User has access - return auth data for child routes
+    return { user: auth.user, profile: auth.profile };
+  },
+  component: () => {
+    const { user } = businessLayoutRoute.useRouteContext();
+
+    const userInfo = {
+      name: 'TODO: Mój Salon',
+      email: user?.email || '',
+    };
+
+    return (
+      <AppLayout
+        navigationGroups={businessNavigationGroups}
+        userInfo={userInfo}
+        settingsPath="/business/settings"
+      />
+    );
+  },
 });

@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
-import { Dropdown, Avatar, Label, Switch } from '@heroui/react';
+import { Dropdown, Avatar, Label, Switch, Spinner } from '@heroui/react';
 import { ChevronUp, LogOut, Moon, Settings, User } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { useSignOutMutation } from '../../services/auth/mutations/use-sign-out-mutation';
 
 export interface UserDropdownProps {
   user: { name: string; email: string };
@@ -33,6 +33,7 @@ export function UserDropdown({
   profilePath,
 }: UserDropdownProps) {
   const navigate = useNavigate();
+  const { mutate: signOut, isPending } = useSignOutMutation();
   const profileTo = profilePath ?? settingsPath;
 
   const handleAction = (key: React.Key) => {
@@ -44,9 +45,7 @@ export function UserDropdown({
         navigate({ to: settingsPath });
         break;
       case 'logout':
-        void supabase.auth.signOut().then(() => {
-          navigate({ to: '/auth/sign-in' });
-        });
+        signOut();
         break;
       default:
         break;
@@ -105,9 +104,20 @@ export function UserDropdown({
             </Dropdown.Item>
           </Dropdown.Section>
           <Dropdown.Section aria-label="Sesja">
-            <Dropdown.Item id="logout" textValue="Wyloguj się" variant="danger">
-              <LogOut className="size-4 shrink-0" aria-hidden />
-              <Label className="text-danger">Wyloguj się</Label>
+            <Dropdown.Item
+              id="logout"
+              textValue="Wyloguj się"
+              variant="danger"
+              isDisabled={isPending}
+            >
+              {isPending ? (
+                <Spinner size="sm" aria-hidden />
+              ) : (
+                <LogOut className="size-4 shrink-0" aria-hidden />
+              )}
+              <Label className="text-danger">
+                {isPending ? 'Wylogowywanie...' : 'Wyloguj się'}
+              </Label>
             </Dropdown.Item>
           </Dropdown.Section>
         </Dropdown.Menu>

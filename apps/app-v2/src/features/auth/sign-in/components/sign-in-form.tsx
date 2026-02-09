@@ -21,24 +21,18 @@ const signInFormSchema = z.object({
 export type SignInFormValues = z.infer<typeof signInFormSchema>;
 
 interface SignInFormProps {
-  onSubmit: (data: SignInFormValues) => Promise<void>;
   isPending?: boolean;
+  onSubmit: (data: SignInFormValues) => void;
 }
 
 export const SignInForm = ({ onSubmit, isPending }: SignInFormProps) => {
-  const {
-    control,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<SignInFormValues>({
+  const { control, handleSubmit } = useForm<SignInFormValues>({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {
       email: '',
       password: '',
     },
   });
-
-  const pending = isPending ?? isSubmitting;
 
   return (
     <form
@@ -126,9 +120,9 @@ export const SignInForm = ({ onSubmit, isPending }: SignInFormProps) => {
             type="submit"
             variant="primary"
             className="w-full"
-            isPending={pending}
+            isPending={isPending}
           >
-            {pending ? 'Logowanie...' : 'Zaloguj się'}
+            {isPending ? 'Logowanie...' : 'Zaloguj się'}
           </Button>
         </Fieldset.Actions>
       </Fieldset>

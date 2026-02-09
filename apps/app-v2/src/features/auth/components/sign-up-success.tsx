@@ -28,7 +28,15 @@ export const SignUpSuccess = ({ userType }: SignUpSuccessProps) => {
       </div>
 
       <Button
-        onClick={() => navigate({ to: '/auth/sign-in' })}
+        onClick={() =>
+          navigate({
+            to: '/auth/sign-in',
+            from: '/auth/sign-up-as-business',
+            search: {
+              redirect: '/business',
+            },
+          })
+        }
         className="w-full"
       >
         Przejdź do logowania

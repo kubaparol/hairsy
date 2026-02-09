@@ -127,6 +127,7 @@ export const SignUpAsBusinessView = () => {
                 Masz już konto?{' '}
                 <Link
                   to="/auth/sign-in"
+                  search={{ redirect: '' }}
                   className="font-medium text-accent underline-offset-4 hover:underline"
                 >
                   Zaloguj się

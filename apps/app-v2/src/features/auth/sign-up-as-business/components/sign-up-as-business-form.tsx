@@ -49,7 +49,7 @@ export type SignUpAsBusinessFormValues = z.infer<
 >;
 
 interface SignUpAsBusinessFormProps {
-  isPending: boolean;
+  isPending?: boolean;
   onSubmit: (data: SignUpAsBusinessFormValues) => void;
 }
 

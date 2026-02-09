@@ -1,8 +1,8 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
 import { Calendar, Store, User } from 'lucide-react';
 
 import { SignInForm } from './components/sign-in-form';
-import { useSignIn } from './hooks/use-sign-in';
+import { useSignInMutation } from '../../../services/auth/mutations/use-sign-in-mutation';
 
 import type { SignInFormValues } from './components/sign-in-form';
 import type { LucideIcon } from 'lucide-react';
@@ -31,10 +31,13 @@ const FEATURES: ReadonlyArray<{
 ];
 
 export const SignInView = () => {
-  const { signIn, isLoading, error } = useSignIn();
+  const search = useSearch({ from: '/auth/sign-in' });
+  const { mutate: signIn, isPending } = useSignInMutation({
+    redirectTo: search.redirect,
+  });
 
-  const handleSubmit = async (values: SignInFormValues) => {
-    await signIn({
+  const handleSubmit = (values: SignInFormValues) => {
+    signIn({
       email: values.email.trim().toLowerCase(),
       password: values.password,
     });
@@ -102,16 +105,7 @@ export const SignInView = () => {
             </p>
           </header>
 
-          {error && (
-            <div
-              className="rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger"
-              role="alert"
-            >
-              {error}
-            </div>
-          )}
-
-          <SignInForm onSubmit={handleSubmit} isPending={isLoading} />
+          <SignInForm isPending={isPending} onSubmit={handleSubmit} />
 
           {/* Footer links — two registration options */}
           <footer className="space-y-1">

@@ -1,5 +1,5 @@
 import { ClipboardList, Heart, LayoutDashboard, Settings } from 'lucide-react';
-import { createRoute } from '@tanstack/react-router';
+import { createRoute, redirect } from '@tanstack/react-router';
 import { AppLayout } from '../../components/layout/app-layout';
 import { rootRoute } from '../../router';
 import type { SidebarNavGroupConfig } from '../../components/layout/sidebar';
@@ -24,19 +24,46 @@ const clientNavigationGroups: SidebarNavGroupConfig[] = [
   },
 ];
 
-const placeholderUser = {
-  name: 'Jan Kowalski',
-  email: 'jan@example.com',
-};
-
 export const clientLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/client',
-  component: () => (
-    <AppLayout
-      navigationGroups={clientNavigationGroups}
-      userInfo={placeholderUser}
-      settingsPath="/client/settings"
-    />
-  ),
+  beforeLoad: async ({ context, location }) => {
+    const { auth } = context;
+
+    // Not authenticated → redirect to sign-in with return URL
+    if (!auth.isAuthenticated) {
+      throw redirect({
+        to: '/auth/sign-in',
+        search: {
+          redirect: location.href,
+        },
+      });
+    }
+
+    // Authenticated but not USER → redirect to business dashboard
+    if (auth.profile?.role !== 'USER') {
+      throw redirect({
+        to: '/business',
+      });
+    }
+
+    // User has access - return auth data for child routes
+    return { user: auth.user, profile: auth.profile };
+  },
+  component: () => {
+    const { user } = clientLayoutRoute.useRouteContext();
+
+    const userInfo = {
+      name: user?.email?.split('@')[0] || 'Użytkownik',
+      email: user?.email || '',
+    };
+
+    return (
+      <AppLayout
+        navigationGroups={clientNavigationGroups}
+        userInfo={userInfo}
+        settingsPath="/client/settings"
+      />
+    );
+  },
 });

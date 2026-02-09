@@ -69,7 +69,7 @@ const signUpAsClientFormSchema = z.object({
 export type SignUpAsClientFormValues = z.infer<typeof signUpAsClientFormSchema>;
 
 interface SignUpAsClientFormProps {
-  isPending: boolean;
+  isPending?: boolean;
   onSubmit: (data: SignUpAsClientFormValues) => void;
 }
 

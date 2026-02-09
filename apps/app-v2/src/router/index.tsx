@@ -1,4 +1,4 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { createRouter } from '@tanstack/react-router';
 import { welcomeRoute } from '../features/welcome/route';
@@ -16,8 +16,13 @@ import { clientAppointmentsRoute } from '../features/client/appointments/route';
 import { clientDashboardRoute } from '../features/client/dashboard/route';
 import { clientFavoritesRoute } from '../features/client/favorites/route';
 import { clientSettingsRoute } from '../features/client/settings/route';
+import type { AuthState } from '../lib/auth-types';
 
-export const rootRoute = createRootRoute({
+export interface RouterContext {
+  auth: AuthState;
+}
+
+export const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <>
       <Outlet />
@@ -56,7 +61,14 @@ export const router = createRouter({
     </div>
   ),
   defaultPendingMinMs: 100,
-  context: {},
+  context: {
+    auth: {
+      user: null,
+      profile: null,
+      isLoading: true,
+      isAuthenticated: false,
+    },
+  },
 });
 
 declare module '@tanstack/react-router' {
