@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button, Label, Modal, Switch } from '@heroui/react';
 import type { Employee } from '../../../../services/employees/types';
 
@@ -14,6 +14,17 @@ export function EmployeeStatusToggle({
   onConfirm,
 }: EmployeeStatusToggleProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const wasPendingRef = useRef(false);
+
+  useEffect(() => {
+    const wasPending = wasPendingRef.current;
+    wasPendingRef.current = isPending ?? false;
+
+    if (wasPending && !isPending && isModalOpen) {
+      const timer = setTimeout(() => setIsModalOpen(false), 0);
+      return () => clearTimeout(timer);
+    }
+  }, [isPending, isModalOpen]);
 
   const targetActive = !employee.isActive;
 
@@ -33,7 +44,6 @@ export function EmployeeStatusToggle({
 
   const handleConfirm = () => {
     onConfirm(employee);
-    setIsModalOpen(false);
   };
 
   return (
@@ -60,7 +70,9 @@ export function EmployeeStatusToggle({
       <Modal.Backdrop
         isOpen={isModalOpen}
         onOpenChange={(nextOpen) => {
-          if (!nextOpen) setIsModalOpen(false);
+          if (!nextOpen && !isPending) {
+            setIsModalOpen(false);
+          }
         }}
       >
         <Modal.Container>
@@ -68,7 +80,7 @@ export function EmployeeStatusToggle({
             aria-labelledby="employee-status-confirm-title"
             className="sm:max-w-lg"
           >
-            <Modal.CloseTrigger />
+            <Modal.CloseTrigger isDisabled={isPending} />
             <Modal.Header>
               <Modal.Heading id="employee-status-confirm-title">
                 {title}
@@ -76,7 +88,7 @@ export function EmployeeStatusToggle({
               <p className="text-default-600 pt-2 text-sm">{description}</p>
             </Modal.Header>
             <Modal.Footer className="flex justify-end gap-3 pt-5">
-              <Button variant="secondary" slot="close">
+              <Button variant="secondary" slot="close" isDisabled={isPending}>
                 Anuluj
               </Button>
               <Button

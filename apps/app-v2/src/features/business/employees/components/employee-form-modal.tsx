@@ -31,14 +31,14 @@ export function EmployeeFormModal({
     <Modal.Backdrop
       isOpen={isOpen}
       onOpenChange={(nextOpen) => {
-        if (!nextOpen) {
+        if (!nextOpen && !isPending) {
           onClose();
         }
       }}
     >
       <Modal.Container size="lg">
         <Modal.Dialog aria-label={title}>
-          <Modal.CloseTrigger />
+          <Modal.CloseTrigger isDisabled={isPending} />
           <Modal.Header className="px-1">
             <Modal.Heading>{title}</Modal.Heading>
             <p className="text-default-500 text-sm">

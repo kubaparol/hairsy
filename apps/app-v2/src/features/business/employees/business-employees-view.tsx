@@ -7,15 +7,9 @@ import {
 } from '../../../services/employees/query-keys';
 import { useEmployeesQuery } from '../../../services/employees/queries/use-employees-query';
 import { useEmployeeStatsQuery } from '../../../services/employees/queries/use-employee-stats-query';
-import { useCreateEmployeeMutation } from '../../../services/employees/mutations/use-create-employee-mutation';
-import { useUpdateEmployeeMutation } from '../../../services/employees/mutations/use-update-employee-mutation';
-import { useSetEmployeeStatusMutation } from '../../../services/employees/mutations/use-set-employee-status-mutation';
-import { useSoftDeleteEmployeeMutation } from '../../../services/employees/mutations/use-soft-delete-employee-mutation';
-import { useHardDeleteEmployeeMutation } from '../../../services/employees/mutations/use-hard-delete-employee-mutation';
 import type { Employee } from '../../../services/employees/types';
-import type { EmployeeFormValues } from './components/employee-form';
-import { DeleteEmployeeModal } from './components/delete-employee-modal';
-import { EmployeeFormModal } from './components/employee-form-modal';
+import { EmployeeFormContainer } from './containers/employee-form-container';
+import { DeleteEmployeeContainer } from './containers/delete-employee-container';
 import { EmployeeTable } from './components/employee-table';
 import { EmployeesStats } from './components/employees-stats';
 import { EmployeesToolbar } from './components/employees-toolbar';
@@ -64,41 +58,8 @@ export function BusinessEmployeesView() {
     setSelectedEmployee(null);
   };
 
-  const createMutation = useCreateEmployeeMutation({
-    onSuccess: closeForm,
-  });
-
-  const updateMutation = useUpdateEmployeeMutation({
-    onSuccess: closeForm,
-  });
-
-  const statusMutation = useSetEmployeeStatusMutation();
-  const softDeleteMutation = useSoftDeleteEmployeeMutation({
-    onSuccess: () => setDeleteState(null),
-  });
-  const hardDeleteMutation = useHardDeleteEmployeeMutation({
-    onSuccess: () => setDeleteState(null),
-  });
-
-  const isAnyMutationPending =
-    createMutation.isPending ||
-    updateMutation.isPending ||
-    statusMutation.isPending ||
-    softDeleteMutation.isPending ||
-    hardDeleteMutation.isPending;
-
-  const handleFormSubmit = (values: EmployeeFormValues) => {
-    if (formMode === 'create') {
-      createMutation.mutate(values);
-      return;
-    }
-
-    if (formMode === 'edit' && selectedEmployee) {
-      updateMutation.mutate({
-        id: selectedEmployee.id,
-        ...values,
-      });
-    }
+  const closeDelete = () => {
+    setDeleteState(null);
   };
 
   const derivedStats = useMemo(
@@ -149,28 +110,11 @@ export function BusinessEmployeesView() {
         }}
       />
 
-      {formMode ? (
-        <EmployeeFormModal
-          mode={formMode}
-          isOpen
-          isPending={createMutation.isPending || updateMutation.isPending}
-          employeeName={selectedEmployee?.fullName}
-          initialValues={
-            selectedEmployee
-              ? {
-                  firstName: selectedEmployee.firstName,
-                  lastName: selectedEmployee.lastName,
-                  bio: selectedEmployee.bio,
-                  avatarUrl: selectedEmployee.avatarUrl,
-                  phoneNumber: selectedEmployee.phoneNumber,
-                  email: selectedEmployee.email,
-                }
-              : undefined
-          }
-          onClose={closeForm}
-          onSubmit={handleFormSubmit}
-        />
-      ) : null}
+      <EmployeeFormContainer
+        mode={formMode}
+        selectedEmployee={selectedEmployee}
+        onClose={closeForm}
+      />
 
       {isEmployeesLoading ? (
         <div
@@ -205,17 +149,10 @@ export function BusinessEmployeesView() {
         employees.length > 0 ? (
           <EmployeeTable
             employees={employees}
-            isMutating={isAnyMutationPending}
             onEdit={(employee) => {
               setSelectedEmployee(employee);
               setFormMode('edit');
             }}
-            onToggleStatus={(employee) =>
-              statusMutation.mutate({
-                id: employee.id,
-                isActive: !employee.isActive,
-              })
-            }
             onSoftDelete={(employee) =>
               setDeleteState({ employee, mode: 'soft' })
             }
@@ -248,24 +185,11 @@ export function BusinessEmployeesView() {
         )
       ) : null}
 
-      {deleteState ? (
-        <DeleteEmployeeModal
-          employee={deleteState.employee}
-          mode={deleteState.mode}
-          isOpen
-          isPending={
-            softDeleteMutation.isPending || hardDeleteMutation.isPending
-          }
-          onClose={() => setDeleteState(null)}
-          onConfirm={() => {
-            if (deleteState.mode === 'soft') {
-              softDeleteMutation.mutate(deleteState.employee.id);
-              return;
-            }
-            hardDeleteMutation.mutate(deleteState.employee.id);
-          }}
-        />
-      ) : null}
+      <DeleteEmployeeContainer
+        employee={deleteState?.employee ?? null}
+        mode={deleteState?.mode ?? null}
+        onClose={closeDelete}
+      />
     </div>
   );
 }

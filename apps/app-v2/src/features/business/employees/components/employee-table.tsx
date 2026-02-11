@@ -16,15 +16,13 @@ import {
 } from '@heroui/react';
 import { AlertTriangle, Menu, Pencil, Trash2, Info } from 'lucide-react';
 import type { Employee } from '../../../../services/employees/types';
-import { EmployeeStatusToggle } from './employee-status-toggle';
+import { EmployeeStatusToggleContainer } from '../containers/employee-status-toggle-container';
 
 interface EmployeeTableProps {
   employees: Employee[];
   onEdit: (employee: Employee) => void;
-  onToggleStatus: (employee: Employee) => void;
   onSoftDelete: (employee: Employee) => void;
   onHardDelete: (employee: Employee) => void;
-  isMutating?: boolean;
 }
 
 const columnHelper = createColumnHelper<Employee>();
@@ -76,10 +74,8 @@ function EmployeeAvatarWithFallback({
 export function EmployeeTable({
   employees,
   onEdit,
-  onToggleStatus,
   onSoftDelete,
   onHardDelete,
-  isMutating,
 }: EmployeeTableProps) {
   const columns = useMemo(
     () => [
@@ -126,13 +122,7 @@ export function EmployeeTable({
         meta: { className: 'w-[150px]' },
         cell: (info) => {
           const employee = info.getValue();
-          return (
-            <EmployeeStatusToggle
-              employee={employee}
-              isPending={isMutating}
-              onConfirm={onToggleStatus}
-            />
-          );
+          return <EmployeeStatusToggleContainer employee={employee} />;
         },
       }),
       columnHelper.accessor('phoneNumber', {
@@ -208,7 +198,6 @@ export function EmployeeTable({
                     aria-label="Akcje pracownika"
                     variant="ghost"
                     size="sm"
-                    isDisabled={isMutating}
                     className="hover:bg-default-100"
                   >
                     <Menu className="size-4" />
@@ -221,9 +210,6 @@ export function EmployeeTable({
                   <Dropdown.Menu
                     aria-label="Akcje pracownika"
                     onAction={handleAction}
-                    disabledKeys={
-                      isMutating ? ['edit', 'soft-delete', 'hard-delete'] : []
-                    }
                   >
                     <Dropdown.Section>
                       <Header>Akcje</Header>
@@ -275,7 +261,7 @@ export function EmployeeTable({
         },
       }),
     ],
-    [isMutating, onEdit, onHardDelete, onSoftDelete, onToggleStatus],
+    [onEdit, onHardDelete, onSoftDelete],
   );
 
   // eslint-disable-next-line react-hooks/incompatible-library

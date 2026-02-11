@@ -36,7 +36,7 @@ export function DeleteEmployeeModal({
     <Modal.Backdrop
       isOpen={isOpen}
       onOpenChange={(nextOpen) => {
-        if (!nextOpen) {
+        if (!nextOpen && !isPending) {
           onClose();
         }
       }}
@@ -46,13 +46,13 @@ export function DeleteEmployeeModal({
           aria-labelledby="delete-employee-title"
           className="sm:max-w-lg"
         >
-          <Modal.CloseTrigger />
+          <Modal.CloseTrigger isDisabled={isPending} />
           <Modal.Header>
             <Modal.Heading id="delete-employee-title">{title}</Modal.Heading>
             <p className="text-default-600 text-sm pt-2">{description}</p>
           </Modal.Header>
           <Modal.Footer className="flex justify-end gap-3 pt-5">
-            <Button variant="secondary" slot="close">
+            <Button variant="secondary" slot="close" isDisabled={isPending}>
               Anuluj
             </Button>
             <Button variant="danger" isPending={isPending} onPress={onConfirm}>

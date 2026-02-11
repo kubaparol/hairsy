@@ -7,6 +7,7 @@ import {
   Fieldset,
   Input,
   Label,
+  TextArea,
   TextField,
 } from '@heroui/react';
 
@@ -270,8 +271,9 @@ export function EmployeeForm({
                 className="md:col-span-2"
               >
                 <Label htmlFor="employee-bio">Bio</Label>
-                <Input
+                <TextArea
                   variant="secondary"
+                  rows={4}
                   id="employee-bio"
                   autoComplete="off"
                   placeholder="Krótkie bio pracownika…"
@@ -284,7 +286,12 @@ export function EmployeeForm({
         </Fieldset.Group>
 
         <Fieldset.Actions className="flex gap-3 pt-3">
-          <Button type="button" variant="secondary" onPress={onCancel}>
+          <Button
+            type="button"
+            variant="secondary"
+            onPress={onCancel}
+            isDisabled={isPending}
+          >
             Anuluj
           </Button>
           <Button type="submit" variant="primary" isPending={isPending}>
