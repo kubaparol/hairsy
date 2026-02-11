@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Button, Card, Spinner } from '@heroui/react';
+import { Button, Spinner } from '@heroui/react';
 import { Users } from 'lucide-react';
 import {
   type EmployeeSortKey,
@@ -13,10 +13,9 @@ import { useSetEmployeeStatusMutation } from '../../../services/employees/mutati
 import { useSoftDeleteEmployeeMutation } from '../../../services/employees/mutations/use-soft-delete-employee-mutation';
 import { useHardDeleteEmployeeMutation } from '../../../services/employees/mutations/use-hard-delete-employee-mutation';
 import type { Employee } from '../../../services/employees/types';
-import {
-  EmployeeForm,
-  type EmployeeFormValues,
-} from './components/employee-form';
+import type { EmployeeFormValues } from './components/employee-form';
+import { DeleteEmployeeModal } from './components/delete-employee-modal';
+import { EmployeeFormModal } from './components/employee-form-modal';
 import { EmployeeTable } from './components/employee-table';
 import { EmployeesStats } from './components/employees-stats';
 import { EmployeesToolbar } from './components/employees-toolbar';
@@ -151,40 +150,26 @@ export function BusinessEmployeesView() {
       />
 
       {formMode ? (
-        <Card>
-          <Card.Header className="flex items-center justify-between gap-4 border-b border-default-200 px-6 py-4">
-            <div>
-              <Card.Title>
-                {formMode === 'create'
-                  ? 'Nowy pracownik'
-                  : `Edycja: ${selectedEmployee?.fullName ?? ''}`}
-              </Card.Title>
-              <Card.Description>
-                Uzupełnij wymagane pola, aby zapisać pracownika.
-              </Card.Description>
-            </div>
-          </Card.Header>
-          <Card.Content className="p-6">
-            <EmployeeForm
-              mode={formMode}
-              isPending={createMutation.isPending || updateMutation.isPending}
-              initialValues={
-                selectedEmployee
-                  ? {
-                      firstName: selectedEmployee.firstName,
-                      lastName: selectedEmployee.lastName,
-                      bio: selectedEmployee.bio,
-                      avatarUrl: selectedEmployee.avatarUrl,
-                      phoneNumber: selectedEmployee.phoneNumber,
-                      email: selectedEmployee.email,
-                    }
-                  : undefined
-              }
-              onCancel={closeForm}
-              onSubmit={handleFormSubmit}
-            />
-          </Card.Content>
-        </Card>
+        <EmployeeFormModal
+          mode={formMode}
+          isOpen
+          isPending={createMutation.isPending || updateMutation.isPending}
+          employeeName={selectedEmployee?.fullName}
+          initialValues={
+            selectedEmployee
+              ? {
+                  firstName: selectedEmployee.firstName,
+                  lastName: selectedEmployee.lastName,
+                  bio: selectedEmployee.bio,
+                  avatarUrl: selectedEmployee.avatarUrl,
+                  phoneNumber: selectedEmployee.phoneNumber,
+                  email: selectedEmployee.email,
+                }
+              : undefined
+          }
+          onClose={closeForm}
+          onSubmit={handleFormSubmit}
+        />
       ) : null}
 
       {isEmployeesLoading ? (
@@ -264,48 +249,22 @@ export function BusinessEmployeesView() {
       ) : null}
 
       {deleteState ? (
-        <div
-          className="fixed inset-0 z-120 grid place-items-center bg-overlay/70 p-4 backdrop-blur-sm"
-          role="presentation"
-        >
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="employees-delete-title"
-            className="w-full max-w-lg rounded-2xl border border-default-200 bg-content1 p-6 shadow-xl"
-          >
-            <h3 id="employees-delete-title" className="text-xl font-semibold">
-              {deleteState.mode === 'soft'
-                ? 'Usunąć pracownika z aktywnej listy?'
-                : 'Trwale usunąć pracownika?'}
-            </h3>
-            <p className="pt-2 text-sm text-default-600">
-              {deleteState.mode === 'soft'
-                ? `Pracownik ${deleteState.employee.fullName} zostanie dezaktywowany i ukryty na liście.`
-                : `Pracownik ${deleteState.employee.fullName} zostanie bezpowrotnie usunięty.`}
-            </p>
-            <div className="mt-5 flex justify-end gap-3">
-              <Button variant="secondary" onPress={() => setDeleteState(null)}>
-                Anuluj
-              </Button>
-              <Button
-                variant="danger"
-                isPending={
-                  softDeleteMutation.isPending || hardDeleteMutation.isPending
-                }
-                onPress={() => {
-                  if (deleteState.mode === 'soft') {
-                    softDeleteMutation.mutate(deleteState.employee.id);
-                    return;
-                  }
-                  hardDeleteMutation.mutate(deleteState.employee.id);
-                }}
-              >
-                {deleteState.mode === 'soft' ? 'Usuń z listy' : 'Usuń na stałe'}
-              </Button>
-            </div>
-          </div>
-        </div>
+        <DeleteEmployeeModal
+          employee={deleteState.employee}
+          mode={deleteState.mode}
+          isOpen
+          isPending={
+            softDeleteMutation.isPending || hardDeleteMutation.isPending
+          }
+          onClose={() => setDeleteState(null)}
+          onConfirm={() => {
+            if (deleteState.mode === 'soft') {
+              softDeleteMutation.mutate(deleteState.employee.id);
+              return;
+            }
+            hardDeleteMutation.mutate(deleteState.employee.id);
+          }}
+        />
       ) : null}
     </div>
   );

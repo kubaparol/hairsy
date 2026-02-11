@@ -1,8 +1,14 @@
-import { Input, Label } from '@heroui/react';
+'use client';
+
+import { useState } from 'react';
+import { RotateCcw } from 'lucide-react';
+import type { Key } from '@heroui/react';
+import { Button, Label, ListBox, SearchField, Select } from '@heroui/react';
 import type {
   EmployeeSortKey,
   EmployeeStatusFilter,
 } from '../../../../services/employees/query-keys';
+import { useDebouncedCallback } from '../../../../lib/use-debounced-callback';
 
 interface EmployeesToolbarProps {
   search: string;
@@ -14,6 +20,19 @@ interface EmployeesToolbarProps {
   onReset: () => void;
 }
 
+const STATUS_OPTIONS = [
+  { id: 'all', label: 'Wszyscy' },
+  { id: 'active', label: 'Aktywni' },
+  { id: 'inactive', label: 'Nieaktywni' },
+] as const;
+
+const SORT_OPTIONS = [
+  { id: 'default', label: 'Domyślne' },
+  { id: 'alphabetical', label: 'A-Z' },
+  { id: 'created_desc', label: 'Najnowsi' },
+  { id: 'created_asc', label: 'Najstarsi' },
+] as const;
+
 export function EmployeesToolbar({
   search,
   status,
@@ -23,65 +42,130 @@ export function EmployeesToolbar({
   onSortChange,
   onReset,
 }: EmployeesToolbarProps) {
+  const [localSearch, setLocalSearch] = useState(search);
+
+  const debouncedSearchChange = useDebouncedCallback((value: string) => {
+    onSearchChange(value);
+  }, 300);
+
+  const handleSearchChange = (value: string) => {
+    setLocalSearch(value);
+    debouncedSearchChange(value);
+  };
+
+  const handleReset = () => {
+    setLocalSearch('');
+    onReset();
+  };
+
+  const handleStatusChange = (value: Key | Key[] | null) => {
+    if (value && typeof value === 'string') {
+      onStatusChange(value as EmployeeStatusFilter);
+    }
+  };
+
+  const handleSortChange = (value: Key | Key[] | null) => {
+    if (value && typeof value === 'string') {
+      onSortChange(value as EmployeeSortKey);
+    }
+  };
+
+  const hasActiveFilters =
+    localSearch !== '' || status !== 'all' || sort !== 'default';
+
   return (
     <section
       aria-label="Filtry i sortowanie pracowników"
-      className="grid gap-3 rounded-2xl border border-default-200 bg-content1 p-4 md:grid-cols-[2fr_1fr_1fr_auto]"
+      className="flex flex-col gap-4 rounded-2xl border border-default-200 bg-content1 p-4"
     >
-      <div className="space-y-2">
-        <Label htmlFor="employees-search">Wyszukiwarka</Label>
-        <Input
-          id="employees-search"
-          type="search"
-          autoComplete="off"
-          spellCheck={false}
-          value={search}
-          onChange={(event) => onSearchChange(event.target.value)}
-          placeholder="Wpisz imię lub nazwisko…"
-        />
-      </div>
+      {/* Search - full width on top */}
+      <SearchField
+        value={localSearch}
+        onChange={handleSearchChange}
+        aria-label="Wyszukaj pracownika"
+      >
+        <Label className="sr-only">Wyszukiwarka</Label>
+        <SearchField.Group>
+          <SearchField.SearchIcon />
+          <SearchField.Input
+            className="w-full"
+            placeholder="Wyszukaj po imieniu lub nazwisku…"
+          />
+          <SearchField.ClearButton />
+        </SearchField.Group>
+      </SearchField>
 
-      <div className="space-y-2">
-        <Label htmlFor="employees-status-filter">Status</Label>
-        <select
-          id="employees-status-filter"
-          className="h-10 w-full rounded-xl border border-default-300 bg-content1 px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      {/* Filters row */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+        {/* Status filter */}
+        <Select
+          className="flex-1 sm:max-w-[180px]"
           value={status}
-          onChange={(event) =>
-            onStatusChange(event.target.value as EmployeeStatusFilter)
-          }
+          onChange={handleStatusChange}
+          aria-label="Filtruj po statusie"
         >
-          <option value="all">Wszyscy</option>
-          <option value="active">Aktywni</option>
-          <option value="inactive">Nieaktywni</option>
-        </select>
-      </div>
+          <Label>Status</Label>
+          <Select.Trigger>
+            <Select.Value />
+            <Select.Indicator />
+          </Select.Trigger>
+          <Select.Popover>
+            <ListBox>
+              {STATUS_OPTIONS.map((option) => (
+                <ListBox.Item
+                  key={option.id}
+                  id={option.id}
+                  textValue={option.label}
+                >
+                  {option.label}
+                  <ListBox.ItemIndicator />
+                </ListBox.Item>
+              ))}
+            </ListBox>
+          </Select.Popover>
+        </Select>
 
-      <div className="space-y-2">
-        <Label htmlFor="employees-sort">Sortowanie</Label>
-        <select
-          id="employees-sort"
-          className="h-10 w-full rounded-xl border border-default-300 bg-content1 px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        {/* Sort filter */}
+        <Select
+          className="flex-1 sm:max-w-[180px]"
           value={sort}
-          onChange={(event) =>
-            onSortChange(event.target.value as EmployeeSortKey)
-          }
+          onChange={handleSortChange}
+          aria-label="Sortowanie"
         >
-          <option value="default">Domyślne</option>
-          <option value="alphabetical">A-Z</option>
-          <option value="created_desc">Data dodania: najnowsi</option>
-          <option value="created_asc">Data dodania: najstarsi</option>
-        </select>
-      </div>
+          <Label>Sortowanie</Label>
+          <Select.Trigger>
+            <Select.Value />
+            <Select.Indicator />
+          </Select.Trigger>
+          <Select.Popover>
+            <ListBox>
+              {SORT_OPTIONS.map((option) => (
+                <ListBox.Item
+                  key={option.id}
+                  id={option.id}
+                  textValue={option.label}
+                >
+                  {option.label}
+                  <ListBox.ItemIndicator />
+                </ListBox.Item>
+              ))}
+            </ListBox>
+          </Select.Popover>
+        </Select>
 
-      <div className="flex items-end">
-        <button
-          type="button"
-          onClick={onReset}
-          className="h-10 w-full rounded-xl border border-default-300 px-4 text-sm font-medium text-default-700 transition-colors hover:bg-default-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        {/* Spacer */}
+        <div className="hidden flex-1 sm:block" />
+
+        {/* Reset button */}
+        <Button
+          variant="secondary"
+          isDisabled={!hasActiveFilters}
+          onPress={handleReset}
+          className="w-full sm:w-auto"
         >
-          Resetuj
-        </button>
+          <RotateCcw className="size-4" />
+          Resetuj filtry
+        </Button>
       </div>
     </section>
   );

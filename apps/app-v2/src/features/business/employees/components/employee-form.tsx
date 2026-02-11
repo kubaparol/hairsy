@@ -133,6 +133,7 @@ export function EmployeeForm({
                   Imię
                 </Label>
                 <Input
+                  variant="secondary"
                   id="employee-first-name"
                   autoComplete="given-name"
                   placeholder="Np. Anna…"
@@ -160,6 +161,7 @@ export function EmployeeForm({
                   Nazwisko
                 </Label>
                 <Input
+                  variant="secondary"
                   id="employee-last-name"
                   autoComplete="family-name"
                   placeholder="Np. Kowalska…"
@@ -184,6 +186,7 @@ export function EmployeeForm({
               >
                 <Label htmlFor="employee-email">Adres e-mail</Label>
                 <Input
+                  variant="secondary"
                   id="employee-email"
                   type="email"
                   autoComplete="email"
@@ -211,6 +214,7 @@ export function EmployeeForm({
               >
                 <Label htmlFor="employee-phone">Telefon</Label>
                 <Input
+                  variant="secondary"
                   id="employee-phone"
                   type="tel"
                   autoComplete="tel"
@@ -238,6 +242,7 @@ export function EmployeeForm({
               >
                 <Label htmlFor="employee-avatar-url">Avatar URL</Label>
                 <Input
+                  variant="secondary"
                   id="employee-avatar-url"
                   type="url"
                   autoComplete="off"
@@ -266,6 +271,7 @@ export function EmployeeForm({
               >
                 <Label htmlFor="employee-bio">Bio</Label>
                 <Input
+                  variant="secondary"
                   id="employee-bio"
                   autoComplete="off"
                   placeholder="Krótkie bio pracownika…"
