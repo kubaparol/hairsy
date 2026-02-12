@@ -14,6 +14,19 @@ export const SignUpSuccess = ({ userType }: SignUpSuccessProps) => {
       ? 'Twoje konto klienta zostało utworzone. Możesz teraz zalogować się i zacząć umawiać wizyty.'
       : 'Twoje konto biznesowe zostało utworzone. Możesz teraz zalogować się i skonfigurować swój salon.';
 
+  const handleGoToLogin = () => {
+    navigate({
+      to: '/auth/sign-in',
+      from:
+        userType === 'client'
+          ? '/auth/sign-up-as-client'
+          : '/auth/sign-up-as-business',
+      search: {
+        redirect: userType === 'client' ? '/client' : '/business',
+      },
+    });
+  };
+
   return (
     <div className="flex w-full max-w-md flex-col items-center justify-center space-y-6 text-center">
       <div className="flex size-16 items-center justify-center rounded-full bg-accent/10">
@@ -27,18 +40,7 @@ export const SignUpSuccess = ({ userType }: SignUpSuccessProps) => {
         <p className="text-muted">{description}</p>
       </div>
 
-      <Button
-        onClick={() =>
-          navigate({
-            to: '/auth/sign-in',
-            from: '/auth/sign-up-as-business',
-            search: {
-              redirect: '/business',
-            },
-          })
-        }
-        className="w-full"
-      >
+      <Button onClick={handleGoToLogin} className="w-full">
         Przejdź do logowania
       </Button>
     </div>

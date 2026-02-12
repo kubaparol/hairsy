@@ -3,12 +3,12 @@ import { Link } from '@tanstack/react-router';
 import { Calendar, Scissors, BarChart3 } from 'lucide-react';
 
 import { SignUpAsBusinessForm } from './components/sign-up-as-business-form';
-import { SignUpSuccess } from '../components/sign-up-success';
 
 import type { SignUpAsBusinessFormValues } from './components/sign-up-as-business-form';
 import type { LucideIcon } from 'lucide-react';
 import { useSignUpAsBusinessMutation } from '../../../services/auth/mutations/use-sign-up-as-business-mutation';
 import { Separator } from '@heroui/react';
+import { SignUpSuccess } from '../components/sign-up-success';
 
 /* Static data hoisted outside the component to avoid re-creation on render */
 const FEATURES: ReadonlyArray<{

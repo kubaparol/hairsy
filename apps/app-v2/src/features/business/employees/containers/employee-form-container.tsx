@@ -1,12 +1,11 @@
-import { useState } from 'react';
 import { useCreateEmployeeMutation } from '../../../../services/employees/mutations/use-create-employee-mutation';
 import { useUpdateEmployeeMutation } from '../../../../services/employees/mutations/use-update-employee-mutation';
 import type { Employee } from '../../../../services/employees/types';
-import {
-  EmployeeFormModal,
-  type EmployeeFormInitialValues,
-  type EmployeeFormValues,
-} from '../components/employee-form-modal';
+import type {
+  EmployeeFormInitialValues,
+  EmployeeFormValues,
+} from '../components/employee-form';
+import { EmployeeFormModal } from '../components/employee-form-modal';
 
 interface EmployeeFormContainerProps {
   mode: 'create' | 'edit' | null;
